@@ -6,13 +6,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
@@ -20,14 +17,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Clean build dir
-        run: cmake -E rm -rf build
+      - name: Show repo layout
+        shell: bash
+        run: |
+          set -eux
+          pwd
+          ls -la
+          echo "---- find CMakeLists.txt (max depth 3) ----"
+          find . -maxdepth 3 -name CMakeLists.txt -print
 
       - name: Configure
-        run: cmake -S . -B build -DCPPLIB_BUILD_TESTS=ON
+        shell: bash
+        run: |
+          set -eux
+          cmake -E rm -rf build
+
+          SRC="."
+          if [ ! -f "${SRC}/CMakeLists.txt" ]; then
+            if [ -f "cpp-lib/CMakeLists.txt" ]; then
+              SRC="cpp-lib"
+            fi
+          fi
+
+          echo "Using source dir: ${SRC}"
+          test -f "${SRC}/CMakeLists.txt"  # bricht mit klarer Meldung ab, falls nicht gefunden
+
+          cmake -S "${SRC}" -B build -DCPPLIB_BUILD_TESTS=ON
 
       - name: Build
-        run: cmake --build build --config Release
+        shell: bash
+        run: |
+          set -eux
+          cmake --build build --config Release
 
       - name: Test
-        run: ctest --test-dir build -C Release --output-on-failure
+        shell: bash
+        run: |
+          set -eux
+          ctest --test-dir build -C Release --output-on-failure
