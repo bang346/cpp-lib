@@ -32,7 +32,7 @@ jobs:
         run: |
           set -eux
           cmake -E rm -rf build
-          cmake -S cpp-lib . -B build -DCPPLIB_BUILD_TESTS=ON
+          cmake -S . -B build -DCPPLIB_BUILD_TESTS=ON
 
       - name: Build
         shell: bash
