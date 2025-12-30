@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
+    branches: [ "main" ]
   pull_request:
+    branches: [ "main" ]
 
 jobs:
   test:
@@ -12,9 +14,13 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Configure (CMake)
+      - name: Clean build dir
+        run: cmake -E rm -rf build
+
+      - name: Configure
         run: cmake -S . -B build -DCPPLIB_BUILD_TESTS=ON
 
       - name: Build

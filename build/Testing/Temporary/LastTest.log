@@ -1,10 +1,10 @@
-Start testing: Dec 30 16:24 Mitteleuropäische Zeit
+Start testing: Dec 30 16:29 Mitteleuropäische Zeit
 ----------------------------------------------------------
 1/4 Testing: CRC.CRC16_CCITT_FALSE_123456789
 1/4 Test: CRC.CRC16_CCITT_FALSE_123456789
 Command: "C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/Debug/test_crc.exe" "--gtest_filter=CRC.CRC16_CCITT_FALSE_123456789" "--gtest_also_run_disabled_tests"
 Directory: C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests
-"CRC.CRC16_CCITT_FALSE_123456789" start time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.CRC16_CCITT_FALSE_123456789" start time: Dec 30 16:29 Mitteleuropäische Zeit
 Output:
 ----------------------------------------------------------
 Running main() from C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-src\googletest\src\gtest_main.cc
@@ -23,7 +23,7 @@ Note: Google Test filter = CRC.CRC16_CCITT_FALSE_123456789
 Test time =   0.01 sec
 ----------------------------------------------------------
 Test Passed.
-"CRC.CRC16_CCITT_FALSE_123456789" end time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.CRC16_CCITT_FALSE_123456789" end time: Dec 30 16:29 Mitteleuropäische Zeit
 "CRC.CRC16_CCITT_FALSE_123456789" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -31,7 +31,7 @@ Test Passed.
 2/4 Test: CRC.CRC32_Ethernet_123456789
 Command: "C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/Debug/test_crc.exe" "--gtest_filter=CRC.CRC32_Ethernet_123456789" "--gtest_also_run_disabled_tests"
 Directory: C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests
-"CRC.CRC32_Ethernet_123456789" start time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.CRC32_Ethernet_123456789" start time: Dec 30 16:29 Mitteleuropäische Zeit
 Output:
 ----------------------------------------------------------
 Running main() from C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-src\googletest\src\gtest_main.cc
@@ -50,7 +50,7 @@ Note: Google Test filter = CRC.CRC32_Ethernet_123456789
 Test time =   0.01 sec
 ----------------------------------------------------------
 Test Passed.
-"CRC.CRC32_Ethernet_123456789" end time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.CRC32_Ethernet_123456789" end time: Dec 30 16:29 Mitteleuropäische Zeit
 "CRC.CRC32_Ethernet_123456789" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -58,7 +58,7 @@ Test Passed.
 3/4 Test: CRC.EmptyBuffer_ReturnsInitXorOut
 Command: "C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/Debug/test_crc.exe" "--gtest_filter=CRC.EmptyBuffer_ReturnsInitXorOut" "--gtest_also_run_disabled_tests"
 Directory: C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests
-"CRC.EmptyBuffer_ReturnsInitXorOut" start time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.EmptyBuffer_ReturnsInitXorOut" start time: Dec 30 16:29 Mitteleuropäische Zeit
 Output:
 ----------------------------------------------------------
 Running main() from C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-src\googletest\src\gtest_main.cc
@@ -77,7 +77,7 @@ Note: Google Test filter = CRC.EmptyBuffer_ReturnsInitXorOut
 Test time =   0.01 sec
 ----------------------------------------------------------
 Test Passed.
-"CRC.EmptyBuffer_ReturnsInitXorOut" end time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.EmptyBuffer_ReturnsInitXorOut" end time: Dec 30 16:29 Mitteleuropäische Zeit
 "CRC.EmptyBuffer_ReturnsInitXorOut" time elapsed: 00:00:00
 ----------------------------------------------------------
 
@@ -85,7 +85,7 @@ Test Passed.
 4/4 Test: CRC.NullDataWithNonzeroLen_IsHandled
 Command: "C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/Debug/test_crc.exe" "--gtest_filter=CRC.NullDataWithNonzeroLen_IsHandled" "--gtest_also_run_disabled_tests"
 Directory: C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests
-"CRC.NullDataWithNonzeroLen_IsHandled" start time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.NullDataWithNonzeroLen_IsHandled" start time: Dec 30 16:29 Mitteleuropäische Zeit
 Output:
 ----------------------------------------------------------
 Running main() from C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-src\googletest\src\gtest_main.cc
@@ -104,8 +104,8 @@ Note: Google Test filter = CRC.NullDataWithNonzeroLen_IsHandled
 Test time =   0.01 sec
 ----------------------------------------------------------
 Test Passed.
-"CRC.NullDataWithNonzeroLen_IsHandled" end time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.NullDataWithNonzeroLen_IsHandled" end time: Dec 30 16:29 Mitteleuropäische Zeit
 "CRC.NullDataWithNonzeroLen_IsHandled" time elapsed: 00:00:00
 ----------------------------------------------------------
 
-End testing: Dec 30 16:24 Mitteleuropäische Zeit
+End testing: Dec 30 16:29 Mitteleuropäische Zeit
