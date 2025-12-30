@@ -9,7 +9,6 @@ on:
 jobs:
   test:
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
@@ -17,54 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Show repo layout
-        shell: bash
-        run: |
-          set -eux
-          pwd
-          ls -la
-          echo "---- CMakeLists candidates ----"
-          find . -maxdepth 4 -name CMakeLists.txt -print
+      - name: Clean
+        run: cmake -E rm -rf build
 
       - name: Configure
-        shell: bash
-        run: |
-          set -eux
-          cmake -E rm -rf build
-
-          # 1) Prefer repo-root if exists
-          if [ -f "./CMakeLists.txt" ]; then
-            SRC="."
-          else
-            # 2) Find a CMakeLists.txt that looks like top-level (contains project(...))
-            TOP=$(find . -maxdepth 4 -name CMakeLists.txt -print | while read -r f; do
-              if grep -qiE '^[[:space:]]*project[[:space:]]*\(' "$f"; then
-                echo "$f"
-                break
-              fi
-            done)
-
-            # 3) Fallback: first CMakeLists (not ideal, but avoids "not found")
-            if [ -z "${TOP:-}" ]; then
-              TOP=$(find . -maxdepth 4 -name CMakeLists.txt -print | head -n 1)
-            fi
-
-            SRC=$(dirname "$TOP")
-          fi
-
-          echo "Using source dir: $SRC"
-          test -f "$SRC/CMakeLists.txt"
-
-          cmake -S "$SRC" -B build -DCPPLIB_BUILD_TESTS=ON
+        run: cmake -S . -B build -DCPPLIB_BUILD_TESTS=ON
 
       - name: Build
-        shell: bash
-        run: |
-          set -eux
-          cmake --build build --config Release
+        run: cmake --build build --config Release
 
       - name: Test
-        shell: bash
-        run: |
-          set -eux
-          ctest --test-dir build -C Release --output-on-failure
+        run: ctest --test-dir build -C Release --output-on-failure
