@@ -1,0 +1,10 @@
+^C:\USERS\MARCO\ONEDRIVE\DOKUMENTE\15.CPP_LIB\BUILD\CMAKEFILES\FB0A502FB47559A9F0C7D87C657372A1\GENERATE.STAMP.RULE
+setlocal
+C:\mingw64\bin\cmake.exe -SC:/Users/marco/OneDrive/Dokumente/15.CPP_LIB -BC:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/cpp_lib.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

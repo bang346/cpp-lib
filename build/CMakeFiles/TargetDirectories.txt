@@ -1,0 +1,3 @@
+C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/Core/Math/crc/CMakeFiles/crc.dir
