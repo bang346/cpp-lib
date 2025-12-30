@@ -3,9 +3,10 @@ project(cpp_lib LANGUAGES CXX)
 
 add_subdirectory(Core/Math/crc)
 
-option(CPPLIB_BUILD_TESTS "Build cpp-lib tests" OFF)
+# add_subdirectory(... weitere module ...)
+option(CPPLIB_BUILD_TESTS "Build cpp-lib unit tests" OFF)
 
-if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR AND CPPLIB_BUILD_TESTS)
+if(PROJECT_IS_TOP_LEVEL AND CPPLIB_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()

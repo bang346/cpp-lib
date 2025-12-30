@@ -1,0 +1,111 @@
+Start testing: Dec 30 16:24 Mitteleuropäische Zeit
+----------------------------------------------------------
+1/4 Testing: CRC.CRC16_CCITT_FALSE_123456789
+1/4 Test: CRC.CRC16_CCITT_FALSE_123456789
+Command: "C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/Debug/test_crc.exe" "--gtest_filter=CRC.CRC16_CCITT_FALSE_123456789" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests
+"CRC.CRC16_CCITT_FALSE_123456789" start time: Dec 30 16:24 Mitteleuropäische Zeit
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = CRC.CRC16_CCITT_FALSE_123456789
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CRC
+[ RUN      ] CRC.CRC16_CCITT_FALSE_123456789
+[       OK ] CRC.CRC16_CCITT_FALSE_123456789 (0 ms)
+[----------] 1 test from CRC (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"CRC.CRC16_CCITT_FALSE_123456789" end time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.CRC16_CCITT_FALSE_123456789" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/4 Testing: CRC.CRC32_Ethernet_123456789
+2/4 Test: CRC.CRC32_Ethernet_123456789
+Command: "C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/Debug/test_crc.exe" "--gtest_filter=CRC.CRC32_Ethernet_123456789" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests
+"CRC.CRC32_Ethernet_123456789" start time: Dec 30 16:24 Mitteleuropäische Zeit
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = CRC.CRC32_Ethernet_123456789
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CRC
+[ RUN      ] CRC.CRC32_Ethernet_123456789
+[       OK ] CRC.CRC32_Ethernet_123456789 (0 ms)
+[----------] 1 test from CRC (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"CRC.CRC32_Ethernet_123456789" end time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.CRC32_Ethernet_123456789" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/4 Testing: CRC.EmptyBuffer_ReturnsInitXorOut
+3/4 Test: CRC.EmptyBuffer_ReturnsInitXorOut
+Command: "C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/Debug/test_crc.exe" "--gtest_filter=CRC.EmptyBuffer_ReturnsInitXorOut" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests
+"CRC.EmptyBuffer_ReturnsInitXorOut" start time: Dec 30 16:24 Mitteleuropäische Zeit
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = CRC.EmptyBuffer_ReturnsInitXorOut
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CRC
+[ RUN      ] CRC.EmptyBuffer_ReturnsInitXorOut
+[       OK ] CRC.EmptyBuffer_ReturnsInitXorOut (0 ms)
+[----------] 1 test from CRC (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"CRC.EmptyBuffer_ReturnsInitXorOut" end time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.EmptyBuffer_ReturnsInitXorOut" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/4 Testing: CRC.NullDataWithNonzeroLen_IsHandled
+4/4 Test: CRC.NullDataWithNonzeroLen_IsHandled
+Command: "C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/Debug/test_crc.exe" "--gtest_filter=CRC.NullDataWithNonzeroLen_IsHandled" "--gtest_also_run_disabled_tests"
+Directory: C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests
+"CRC.NullDataWithNonzeroLen_IsHandled" start time: Dec 30 16:24 Mitteleuropäische Zeit
+Output:
+----------------------------------------------------------
+Running main() from C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-src\googletest\src\gtest_main.cc
+Note: Google Test filter = CRC.NullDataWithNonzeroLen_IsHandled
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CRC
+[ RUN      ] CRC.NullDataWithNonzeroLen_IsHandled
+[       OK ] CRC.NullDataWithNonzeroLen_IsHandled (0 ms)
+[----------] 1 test from CRC (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"CRC.NullDataWithNonzeroLen_IsHandled" end time: Dec 30 16:24 Mitteleuropäische Zeit
+"CRC.NullDataWithNonzeroLen_IsHandled" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Dec 30 16:24 Mitteleuropäische Zeit

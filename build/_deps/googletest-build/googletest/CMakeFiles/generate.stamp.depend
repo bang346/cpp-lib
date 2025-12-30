@@ -1,0 +1,18 @@
+# CMake generation dependency list for this directory.
+C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/googletest-src/googletest/CMakeLists.txt
+C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/googletest-src/googletest/cmake/Config.cmake.in
+C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/googletest-src/googletest/cmake/gtest.pc.in
+C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/googletest-src/googletest/cmake/gtest_main.pc.in
+C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/googletest-src/googletest/cmake/internal_utils.cmake
+C:/mingw64/share/cmake-3.28/Modules/BasicConfigVersion-AnyNewerVersion.cmake.in
+C:/mingw64/share/cmake-3.28/Modules/CMakePackageConfigHelpers.cmake
+C:/mingw64/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake
+C:/mingw64/share/cmake-3.28/Modules/CheckIncludeFile.cmake
+C:/mingw64/share/cmake-3.28/Modules/CheckLibraryExists.cmake
+C:/mingw64/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake
+C:/mingw64/share/cmake-3.28/Modules/FindPackageMessage.cmake
+C:/mingw64/share/cmake-3.28/Modules/FindPython.cmake
+C:/mingw64/share/cmake-3.28/Modules/FindPython/Support.cmake
+C:/mingw64/share/cmake-3.28/Modules/FindThreads.cmake
+C:/mingw64/share/cmake-3.28/Modules/Internal/CheckSourceCompiles.cmake
+C:/mingw64/share/cmake-3.28/Modules/WriteBasicConfigVersionFile.cmake

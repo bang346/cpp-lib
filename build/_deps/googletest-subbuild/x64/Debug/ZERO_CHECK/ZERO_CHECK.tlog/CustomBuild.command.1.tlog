@@ -1,0 +1,10 @@
+^C:\USERS\MARCO\ONEDRIVE\DOKUMENTE\15.CPP_LIB\BUILD\_DEPS\GOOGLETEST-SUBBUILD\CMAKEFILES\476295212B5B6B620294B8D91811ADF2\GENERATE.STAMP.RULE
+setlocal
+C:\mingw64\bin\cmake.exe -SC:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/googletest-subbuild -BC:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/googletest-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/googletest-subbuild/googletest-populate.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

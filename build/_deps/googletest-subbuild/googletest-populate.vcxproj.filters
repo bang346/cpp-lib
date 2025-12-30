@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeFiles\59cbe9c53611fb3dbe820f4ccc7ec116\googletest-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeFiles\59cbe9c53611fb3dbe820f4ccc7ec116\googletest-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeFiles\59cbe9c53611fb3dbe820f4ccc7ec116\googletest-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeFiles\59cbe9c53611fb3dbe820f4ccc7ec116\googletest-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeFiles\59cbe9c53611fb3dbe820f4ccc7ec116\googletest-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeFiles\59cbe9c53611fb3dbe820f4ccc7ec116\googletest-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeFiles\59cbe9c53611fb3dbe820f4ccc7ec116\googletest-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeFiles\59cbe9c53611fb3dbe820f4ccc7ec116\googletest-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeFiles\ff1ebc59468584ae9a7027d375f51345\googletest-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeFiles\476295212b5b6b620294b8d91811adf2\googletest-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-subbuild\CMakeFiles\googletest-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{7F9F1CA6-342D-39DA-816F-5478F0C10C61}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

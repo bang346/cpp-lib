@@ -1,0 +1,6 @@
+# CMake generation dependency list for this directory.
+C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/tests/CMakeLists.txt
+C:/mingw64/share/cmake-3.28/Modules/ExternalProject/shared_internal_commands.cmake
+C:/mingw64/share/cmake-3.28/Modules/FetchContent.cmake
+C:/mingw64/share/cmake-3.28/Modules/FetchContent/CMakeLists.cmake.in
+C:/mingw64/share/cmake-3.28/Modules/GoogleTest.cmake

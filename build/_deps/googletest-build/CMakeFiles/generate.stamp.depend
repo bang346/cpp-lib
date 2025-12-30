@@ -1,0 +1,13 @@
+# CMake generation dependency list for this directory.
+C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/CMakeFiles/3.28.2/CMakeCCompiler.cmake
+C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/googletest-src/CMakeLists.txt
+C:/mingw64/share/cmake-3.28/Modules/CMakeCInformation.cmake
+C:/mingw64/share/cmake-3.28/Modules/CMakeCommonLanguageInclude.cmake
+C:/mingw64/share/cmake-3.28/Modules/CMakeDependentOption.cmake
+C:/mingw64/share/cmake-3.28/Modules/CMakeLanguageInformation.cmake
+C:/mingw64/share/cmake-3.28/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+C:/mingw64/share/cmake-3.28/Modules/Compiler/MSVC-C.cmake
+C:/mingw64/share/cmake-3.28/Modules/Compiler/MSVC.cmake
+C:/mingw64/share/cmake-3.28/Modules/GNUInstallDirs.cmake
+C:/mingw64/share/cmake-3.28/Modules/Platform/Windows-MSVC-C.cmake
+C:/mingw64/share/cmake-3.28/Modules/Platform/Windows-MSVC.cmake
