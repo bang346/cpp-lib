@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 project(cpp_lib LANGUAGES CXX)
 
-# Module hinzufügen (später kannst du das über option(...) schaltbar machen)
 add_subdirectory(Core/Math/crc)
+
+option(CPPLIB_BUILD_TESTS "Build cpp-lib tests" OFF)
+
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR AND CPPLIB_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
