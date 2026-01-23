@@ -20,12 +20,12 @@ target_link_libraries(test_crc PRIVATE
 )
 gtest_discover_tests(test_crc)
 
-# # ---------- SPI_IF ----------
-# add_executable(test_spi_if
-# spi_if/test_spi_if.cpp
-# )
-# target_link_libraries(test_spi_if PRIVATE
-# yourlib::spi_if
-# GTest::gtest_main
-# )
-# gtest_discover_tests(test_spi_if)
+# ---------- PID ----------
+add_executable(test_pid
+  pid/test_pid.cpp
+)
+target_link_libraries(test_pid PRIVATE
+  control::pid
+  GTest::gtest_main
+)
+gtest_discover_tests(test_pid)

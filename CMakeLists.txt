@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(cpp_lib LANGUAGES CXX)
 
 add_subdirectory(Core/Math/crc)
+add_subdirectory(Core/Control/pid)
 
 # add_subdirectory(... weitere module ...)
 option(CPPLIB_BUILD_TESTS "Build cpp-lib unit tests" OFF)

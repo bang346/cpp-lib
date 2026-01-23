@@ -108,7 +108,7 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\CmakeLists.txt">
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\CMakeLists.txt">
       <UseUtf8Encoding>Always</UseUtf8Encoding>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
@@ -193,9 +193,17 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{8287D862-BDDA-32AA-BC0B-231C1A720DDB}</Project>
       <Name>gtest_main</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\Core\Control\pid\pid.vcxproj">
+      <Project>{A8DE5A37-3B02-3489-B21D-E8358185AC0A}</Project>
+      <Name>pid</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\tests\test_crc.vcxproj">
       <Project>{F57797BD-831F-3A33-A915-7A4A31191EA4}</Project>
       <Name>test_crc</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\tests\test_pid.vcxproj">
+      <Project>{D7857AAF-4566-3DAF-BFF5-770939EBD7DC}</Project>
+      <Name>test_pid</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
