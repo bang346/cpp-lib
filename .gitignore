@@ -1,0 +1,3 @@
+# Build-Ordner (z.B. CMake)
+build/
+cmake-build-*/
