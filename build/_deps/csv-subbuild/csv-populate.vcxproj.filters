@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\7998d9b75a76accc7217f25cdb787032\csv-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\dc2dcc78fb5e364dbd489eeb2dc730e4\csv-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\csv-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{815C1498-3323-3E52-8EBB-1418A9A156E7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

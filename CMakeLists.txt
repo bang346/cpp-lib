@@ -3,6 +3,8 @@ project(cpp_lib LANGUAGES CXX)
 
 add_subdirectory(Core/Math/crc)
 add_subdirectory(Core/Control/pid)
+add_subdirectory(Core/Control/cntr_system)
+add_subdirectory(Helper/csv_parser)
 
 # add_subdirectory(... weitere module ...)
 option(CPPLIB_BUILD_TESTS "Build cpp-lib unit tests" OFF)

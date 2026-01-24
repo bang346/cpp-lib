@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E7BD2279-9A3B-3AF7-9A59-8DCCF0DC6B56}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>csv-populate</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-mkdir.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Creating directories for 'csv-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+C:\mingw64\bin\cmake.exe -Dcfgdir=/Debug -P C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/csv-populate-prefix/tmp/csv-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E touch C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/csv-populate-prefix/src/csv-populate-stamp/Debug/csv-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-mkdir</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-download.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing download step (git clone) for 'csv-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -P C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/csv-populate-prefix/tmp/csv-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E touch C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/csv-populate-prefix/src/csv-populate-stamp/Debug/csv-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\csv-populate-gitinfo.txt;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-mkdir;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-download</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-update.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing update step for 'csv-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -Dcan_fetch=YES -P C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/csv-populate-prefix/tmp/csv-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\tmp\csv-populate-gitupdate.cmake;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\csv-populate-update-info.txt;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-download;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-update</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-patch.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No patch step for 'csv-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+C:\mingw64\bin\cmake.exe -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E touch C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/csv-populate-prefix/src/csv-populate-stamp/Debug/csv-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\csv-populate-patch-info.txt;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-update;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-patch</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-configure.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No configure step for 'csv-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E touch C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/csv-populate-prefix/src/csv-populate-stamp/Debug/csv-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\tmp\csv-populate-cfgcmd.txt;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-patch;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-configure</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-build.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No build step for 'csv-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E touch C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/csv-populate-prefix/src/csv-populate-stamp/Debug/csv-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-configure;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-build</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-install.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No install step for 'csv-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E touch C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/csv-populate-prefix/src/csv-populate-stamp/Debug/csv-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-build;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-install</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\800a734e2e98f4a5fb41df2752018ce5\csv-populate-test.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">No test step for 'csv-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E touch C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/csv-populate-prefix/src/csv-populate-stamp/Debug/csv-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-install;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-test</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\7998d9b75a76accc7217f25cdb787032\csv-populate-complete.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Completed 'csv-populate'</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+C:\mingw64\bin\cmake.exe -E make_directory C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E touch C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/CMakeFiles/Debug/csv-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+C:\mingw64\bin\cmake.exe -E touch C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/csv-populate-prefix/src/csv-populate-stamp/Debug/csv-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-install;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-mkdir;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-download;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-update;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-patch;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-configure;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-build;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\src\csv-populate-stamp\Debug\csv-populate-test;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\Debug\csv-populate-complete</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\dc2dcc78fb5e364dbd489eeb2dc730e4\csv-populate.rule">
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\Debug\csv-populate-complete;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\csv-populate</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+C:\mingw64\bin\cmake.exe -SC:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild -BC:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild --check-stamp-file C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/_deps/csv-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\3.28.2\CMakeSystem.cmake;C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\csv-populate-prefix\tmp\csv-populate-mkdirs.cmake;C:\mingw64\share\cmake-3.28\Modules\CMakeGenericSystem.cmake;C:\mingw64\share\cmake-3.28\Modules\CMakeInitializeConfigs.cmake;C:\mingw64\share\cmake-3.28\Modules\CMakeSystemSpecificInformation.cmake;C:\mingw64\share\cmake-3.28\Modules\CMakeSystemSpecificInitialize.cmake;C:\mingw64\share\cmake-3.28\Modules\ExternalProject.cmake;C:\mingw64\share\cmake-3.28\Modules\ExternalProject\PatchInfo.txt.in;C:\mingw64\share\cmake-3.28\Modules\ExternalProject\RepositoryInfo.txt.in;C:\mingw64\share\cmake-3.28\Modules\ExternalProject\UpdateInfo.txt.in;C:\mingw64\share\cmake-3.28\Modules\ExternalProject\cfgcmd.txt.in;C:\mingw64\share\cmake-3.28\Modules\ExternalProject\gitclone.cmake.in;C:\mingw64\share\cmake-3.28\Modules\ExternalProject\gitupdate.cmake.in;C:\mingw64\share\cmake-3.28\Modules\ExternalProject\mkdirs.cmake.in;C:\mingw64\share\cmake-3.28\Modules\ExternalProject\shared_internal_commands.cmake;C:\mingw64\share\cmake-3.28\Modules\Platform\Windows-Initialize.cmake;C:\mingw64\share\cmake-3.28\Modules\Platform\Windows.cmake;C:\mingw64\share\cmake-3.28\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\CMakeFiles\csv-populate">
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-subbuild\ZERO_CHECK.vcxproj">
+      <Project>{022E44FA-FF47-34AD-94A2-07DA7756B822}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

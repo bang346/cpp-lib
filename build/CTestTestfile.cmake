@@ -6,4 +6,6 @@
 # testing this directory and lists subdirectories to be tested as well.
 subdirs("Core/Math/crc")
 subdirs("Core/Control/pid")
+subdirs("Core/Control/cntr_system")
+subdirs("Helper/csv_parser")
 subdirs("tests")

@@ -173,9 +173,29 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
+    <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\Core\Control\cntr_system\cntr_system.vcxproj">
+      <Project>{EC60BE44-9BB7-3609-981D-D351C59904CA}</Project>
+      <Name>cntr_system</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\Core\Math\crc\crc.vcxproj">
       <Project>{75776ADA-7C3C-30A3-B338-264B6572E10B}</Project>
       <Name>crc</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-build\include\internal\csv.vcxproj">
+      <Project>{6395D6B6-9570-3FAF-A970-9672DDAD4A50}</Project>
+      <Name>csv</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-build\programs\csv_info.vcxproj">
+      <Project>{552945CD-2432-3C1C-A9FA-6AB349E22563}</Project>
+      <Name>csv_info</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\Helper\csv_parser\csv_parser.vcxproj">
+      <Project>{6C125A92-09DF-328F-9BD6-E3DBDE85A6B7}</Project>
+      <Name>csv_parser</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\csv-build\programs\csv_stats.vcxproj">
+      <Project>{1A5C06AC-8988-3B90-9FE8-D0F442ED933B}</Project>
+      <Name>csv_stats</Name>
     </ProjectReference>
     <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\_deps\googletest-build\googlemock\gmock.vcxproj">
       <Project>{084F0BE5-F6B5-3DDA-B3DA-8FF1CC942C0F}</Project>
@@ -197,13 +217,17 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{A8DE5A37-3B02-3489-B21D-E8358185AC0A}</Project>
       <Name>pid</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\tests\test_control.vcxproj">
+      <Project>{25BA975D-F52E-3E8E-88AC-7A01CF9ECD26}</Project>
+      <Name>test_control</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\tests\test_crc.vcxproj">
       <Project>{F57797BD-831F-3A33-A915-7A4A31191EA4}</Project>
       <Name>test_crc</Name>
     </ProjectReference>
-    <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\tests\test_pid.vcxproj">
-      <Project>{D7857AAF-4566-3DAF-BFF5-770939EBD7DC}</Project>
-      <Name>test_pid</Name>
+    <ProjectReference Include="C:\Users\marco\OneDrive\Dokumente\15.CPP_LIB\build\tests\test_csv.vcxproj">
+      <Project>{ADDAABCF-02E4-35B0-805E-26E3876AF203}</Project>
+      <Name>test_csv</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -20,12 +20,29 @@ target_link_libraries(test_crc PRIVATE
 )
 gtest_discover_tests(test_crc)
 
-# ---------- PID ----------
-add_executable(test_pid
-  pid/test_pid.cpp
+# ---------- CSV ----------
+add_executable(test_csv
+  csv/test_csv.cpp
 )
-target_link_libraries(test_pid PRIVATE
-  control::pid
+target_link_libraries(test_csv PRIVATE
+  helper::csv_parser
   GTest::gtest_main
 )
-gtest_discover_tests(test_pid)
+
+target_compile_definitions(test_csv PRIVATE
+  TEST_CSV_PATH="${CMAKE_CURRENT_SOURCE_DIR}/csv/data.csv"
+)
+
+gtest_discover_tests(test_csv)
+
+# ---------- PID ----------
+add_executable(test_control
+  control/test_control.cpp
+)
+target_link_libraries(test_control PRIVATE
+  control::pid
+  control::cntr_system
+  helper::csv_parser
+  GTest::gtest_main
+)
+gtest_discover_tests(test_control)

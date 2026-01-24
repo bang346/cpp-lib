@@ -5,5 +5,6 @@
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
 include("C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/test_crc[1]_include.cmake")
-include("C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/test_pid[1]_include.cmake")
+include("C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/test_csv[1]_include.cmake")
+include("C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/test_control[1]_include.cmake")
 subdirs("../_deps/googletest-build")

@@ -1,0 +1,5 @@
+if(EXISTS "C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/test_control[1]_tests.cmake")
+  include("C:/Users/marco/OneDrive/Dokumente/15.CPP_LIB/build/tests/test_control[1]_tests.cmake")
+else()
+  add_test(test_control_NOT_BUILT test_control_NOT_BUILT)
+endif()
