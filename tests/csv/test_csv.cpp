@@ -2,7 +2,7 @@
 
 #include "csv_parser.hpp"
 
-std::string path = TEST_CSV_PATH;
+std::string path = TEST_CSV_PATH; // From build
 
 class LeapYearCalendar
 {

@@ -10,7 +10,7 @@ private:
     U y_k1_;
 
 public:
-    cntr_system::cntr_system(const U K, const U T, const U TA)
+    cntr_system(const U K, const U T, const U TA)
         : b0_(K / (1 + (2 * T) / TA)),
           b1_(b0_),
           a1_((TA - 2 * T) / (TA + 2 * T)),
