@@ -20,6 +20,16 @@ target_link_libraries(test_crc PRIVATE
 )
 gtest_discover_tests(test_crc)
 
+# ---------- Math ----------
+add_executable(test_math
+  math_test/test_math.cpp
+)
+target_link_libraries(test_math PRIVATE
+  math::clark_park
+  GTest::gtest_main
+)
+gtest_discover_tests(test_math)
+
 # ---------- CSV ----------
 add_executable(test_csv
   csv/test_csv.cpp

@@ -51,15 +51,19 @@ public:
     }
 };
 
+/// @brief PID-controller with D-Part filter and anti-windup
+/// @tparam T   Datatype for calculations
 template <typename T = double>
 class PIDF
 {
 private:
+    // Coefficients for faster calculations
     const T i_coeff_, d1_coeff_, d2_coeff_;
-    T e_k1_;
-    T d_k1, i_k1_;
-    const T Kp_;
-    const T u_max_, u_min_;
+    T e_k1_;                // Error last cycle: e[k-1]
+    T d_k1, i_k1_;          // D- and I- value last cycle
+                            // D[k-1] I[k-1]
+    const T Kp_;            // Proportional Part
+    const T u_max_, u_min_; // Windup-limits
 
 public:
     // /// @brief Initialization
