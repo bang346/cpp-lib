@@ -51,5 +51,5 @@ TEST_P(LeapYearParameterizedTestFixture, ReadYearsFromCsv)
 INSTANTIATE_TEST_SUITE_P(
     LeapYearTests,
     LeapYearParameterizedTestFixture,
-    ::testing::ValuesIn(loadTestCases(TEST_CSV_PATH)) // ValuesIn
+    ::testing::ValuesIn(loadTestCases(path)) // ValuesIn
 );

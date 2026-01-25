@@ -9,6 +9,7 @@ add_subdirectory(Helper/csv_parser)
 # add_subdirectory(... weitere module ...)
 option(CPPLIB_BUILD_TESTS "Build cpp-lib unit tests" OFF)
 
+# To build with tests run: cmake -S . -B build -DCPPLIB_BUILD_TESTS=ON
 if(PROJECT_IS_TOP_LEVEL AND CPPLIB_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
