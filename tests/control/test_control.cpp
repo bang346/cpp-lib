@@ -104,7 +104,7 @@ TEST(ClosedLoopTest, PIDFcontrolSystemTrajectory)
     double Tf = 1e-3;
 
     cntr_system<double> plant(1.0, 2.0, Ts);
-    PIDF<double> pid(1.0, 10.0, 1.0, Ts, Tf);
+    PIDF<double> pid(1.0, 10.0, 1.0, Ts, Tf, 10000.0, -10000.0);
 
     double y = 0.0;
 
