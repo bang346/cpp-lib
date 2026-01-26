@@ -1,262 +1,158 @@
-#ifndef CLARK_PARK
-#define CLARK_PARK
-#include <cmath>
+#ifndef CLARK_PARK_HPP
+#define CLARK_PARK_HPP
 
-namespace
+/**
+ * @file clark_park.hpp
+ * @brief Clarke and Park transformations for FOC (Field-Oriented Control).
+ *
+ * Supports amplitude-invariant and power-invariant Clarke transforms,
+ * as well as standard and alternative Park conventions.
+ */
+
+namespace clark_park
 {
-    // Basis
-    constexpr double one_over_2 = 0.5;
-    constexpr double minus_one_over_2 = -0.5;
+    // ============================================================
+    // Clarke transform (amplitude-invariant)
+    // ============================================================
 
-    constexpr double one_over_3 = 0.33333333333333333333333333333333; // 1/3
-    constexpr double two_over_3 = 0.66666666666666666666666666666667; // 2/3
+    /// @brief Clarke transform (amplitude-invariant) using 2 current measurements (ia, ib).
+    /// @details Assumes ic = -ia - ib.
+    /// @param ia Phase A current.
+    /// @param ib Phase B current.
+    /// @param[out] alpha Alpha-axis component.
+    /// @param[out] beta  Beta-axis component.
+    void clarke_2shunt_amp(double ia, double ib, double &alpha, double &beta);
 
-    // √3 Werte (fest, ohne sqrt)
-    constexpr double sqrt3 = 1.73205080756887729352744634150587;          // √3
-    constexpr double sqrt3_over_2 = 0.86602540378443864676372317075294;   // √3/2
-    constexpr double one_over_sqrt3 = 0.57735026918962576450914878050196; // 1/√3
+    /// @brief Clarke transform (amplitude-invariant) using 3 phase currents (ia, ib, ic).
+    /// @details Valid when ia + ib + ic = 0.
+    /// @param ia Phase A current.
+    /// @param ib Phase B current.
+    /// @param ic Phase C current.
+    /// @param[out] alpha Alpha-axis component.
+    /// @param[out] beta  Beta-axis component.
+    void clarke_3shunt_amp(double ia, double ib, double ic, double &alpha, double &beta);
+
+    // ============================================================
+    // Clarke transform (power-invariant, 2/3 scaling)
+    // ============================================================
+
+    /// @brief Clarke transform (power-invariant, 2/3 scaling) using 3 phase currents (ia, ib, ic).
+    /// @param ia Phase A current.
+    /// @param ib Phase B current.
+    /// @param ic Phase C current.
+    /// @param[out] alpha Alpha-axis component.
+    /// @param[out] beta  Beta-axis component.
+    void clarke_3shunt_power(double ia, double ib, double ic, double &alpha, double &beta);
+
+    /// @brief Clarke transform (power-invariant, 2/3 scaling) using 2 phase currents (ia, ib).
+    /// @details Assumes ic = -ia - ib internally.
+    /// @param ia Phase A current.
+    /// @param ib Phase B current.
+    /// @param[out] alpha Alpha-axis component.
+    /// @param[out] beta  Beta-axis component.
+    void clarke_2shunt_power(double ia, double ib, double &alpha, double &beta);
+
+    // ============================================================
+    // Inverse Clarke transform
+    // ============================================================
+
+    /// @brief Inverse Clarke transform (amplitude-invariant) from (alpha, beta) to (ia, ib, ic).
+    /// @param alpha Alpha-axis component.
+    /// @param beta  Beta-axis component.
+    /// @param[out] ia Phase A current.
+    /// @param[out] ib Phase B current.
+    /// @param[out] ic Phase C current.
+    void inv_clarke_amp(double alpha, double beta, double &ia, double &ib, double &ic);
+
+    /// @brief Inverse Clarke transform (power-invariant usage).
+    /// @details In practice often identical to amplitude-invariant inverse Clarke.
+    /// @param alpha Alpha-axis component.
+    /// @param beta  Beta-axis component.
+    /// @param[out] ia Phase A current.
+    /// @param[out] ib Phase B current.
+    /// @param[out] ic Phase C current.
+    void inv_clarke_power(double alpha, double beta, double &ia, double &ib, double &ic);
+
+    // ============================================================
+    // Park transform (standard convention)
+    // ============================================================
+
+    /// @brief Park transform (standard convention).
+    /// @param alpha Alpha-axis component.
+    /// @param beta  Beta-axis component.
+    /// @param sin_theta Sine of electrical angle.
+    /// @param cos_theta Cosine of electrical angle.
+    /// @param[out] d D-axis component.
+    /// @param[out] q Q-axis component.
+    void park_std(double alpha, double beta,
+                  double sin_theta, double cos_theta,
+                  double &d, double &q);
+
+    /// @brief Inverse Park transform (standard convention).
+    /// @param d D-axis component.
+    /// @param q Q-axis component.
+    /// @param sin_theta Sine of electrical angle.
+    /// @param cos_theta Cosine of electrical angle.
+    /// @param[out] alpha Alpha-axis component.
+    /// @param[out] beta  Beta-axis component.
+    void inv_park_std(double d, double q,
+                      double sin_theta, double cos_theta,
+                      double &alpha, double &beta);
+
+    // ============================================================
+    // Park transform (alternative convention)
+    // ============================================================
+
+    /// @brief Park transform (alternative sign convention).
+    /// @details Must be used consistently together with inv_park_alt().
+    /// @param alpha Alpha-axis component.
+    /// @param beta  Beta-axis component.
+    /// @param sin_theta Sine of electrical angle.
+    /// @param cos_theta Cosine of electrical angle.
+    /// @param[out] d D-axis component.
+    /// @param[out] q Q-axis component.
+    void park_alt(double alpha, double beta,
+                  double sin_theta, double cos_theta,
+                  double &d, double &q);
+
+    /// @brief Inverse Park transform for the alternative convention.
+    /// @param d D-axis component.
+    /// @param q Q-axis component.
+    /// @param sin_theta Sine of electrical angle.
+    /// @param cos_theta Cosine of electrical angle.
+    /// @param[out] alpha Alpha-axis component.
+    /// @param[out] beta  Beta-axis component.
+    void inv_park_alt(double d, double q,
+                      double sin_theta, double cos_theta,
+                      double &alpha, double &beta);
+
+    // ============================================================
+    // FLOAT overloads
+    // ============================================================
+
+    void clarke_2shunt_amp(float ia, float ib, float &alpha, float &beta);
+    void clarke_3shunt_amp(float ia, float ib, float ic, float &alpha, float &beta);
+    void clarke_3shunt_power(float ia, float ib, float ic, float &alpha, float &beta);
+    void clarke_2shunt_power(float ia, float ib, float &alpha, float &beta);
+
+    void inv_clarke_amp(float alpha, float beta, float &ia, float &ib, float &ic);
+    void inv_clarke_power(float alpha, float beta, float &ia, float &ib, float &ic);
+
+    void park_std(float alpha, float beta,
+                  float sin_theta, float cos_theta,
+                  float &d, float &q);
+
+    void inv_park_std(float d, float q,
+                      float sin_theta, float cos_theta,
+                      float &alpha, float &beta);
+
+    void park_alt(float alpha, float beta,
+                  float sin_theta, float cos_theta,
+                  float &d, float &q);
+
+    void inv_park_alt(float d, float q,
+                      float sin_theta, float cos_theta,
+                      float &alpha, float &beta);
 }
 
-// ============================================================
-// 1) CLARKE (Amplitude-invariant) - 2 Strommessungen (ia, ib)
-//    Annahme: ic = -ia - ib
-//    alpha = ia
-//    beta  = (ia + 2*ib)/√3
-// ============================================================
-inline void clarke_2shunt_amp(double ia, double ib, double &alpha, double &beta)
-{
-    alpha = ia;
-    beta = (ia + 2.0 * ib) * one_over_sqrt3;
-}
-
-// ============================================================
-// 2) CLARKE (Amplitude-invariant) - mit 3 Phasen (ia, ib, ic)
-//    alpha = ia
-//    beta  = (ib - ic)/√3      (wenn ia+ib+ic=0)
-// ============================================================
-inline void clarke_3shunt_amp(double ia, double ib, double ic, double &alpha, double &beta)
-{
-    (void)ib; // optional, falls du nur ic nutzt
-    alpha = ia;
-    beta = (ib - ic) * one_over_sqrt3;
-}
-
-// ============================================================
-// 3) CLARKE (Power-invariant, "2/3-Variante") - 3 Phasen (ia,ib,ic)
-//    alpha = 2/3 * (ia - 1/2*ib - 1/2*ic)
-//    beta  = 2/3 * (√3/2 * (ib - ic))
-// ============================================================
-inline void clarke_3shunt_power(double ia, double ib, double ic, double &alpha, double &beta)
-{
-    alpha = two_over_3 * (ia + minus_one_over_2 * ib + minus_one_over_2 * ic);
-    beta = two_over_3 * (sqrt3_over_2 * (ib - ic));
-}
-
-// ============================================================
-// 4) CLARKE (Power-invariant, "2/3-Variante") - nur 2 Messungen (ia, ib)
-//    ic = -ia - ib eingesetzt => gleiche Normierung wie oben
-// ============================================================
-inline void clarke_2shunt_power(double ia, double ib, double &alpha, double &beta)
-{
-    const double ic = -ia - ib;
-    clarke_3shunt_power(ia, ib, ic, alpha, beta);
-}
-
-// ============================================================
-// 5) INVERSE CLARKE (Amplitude-invariant) -> (a,b,c)
-//    a = alpha
-//    b = -1/2*alpha + √3/2*beta
-//    c = -1/2*alpha - √3/2*beta
-// ============================================================
-inline void inv_clarke_amp(double alpha, double beta, double &ia, double &ib, double &ic)
-{
-    ia = alpha;
-    ib = minus_one_over_2 * alpha + sqrt3_over_2 * beta;
-    ic = minus_one_over_2 * alpha - sqrt3_over_2 * beta;
-}
-
-// ============================================================
-// 6) INVERSE CLARKE (Power-invariant) -> (a,b,c)
-//    Gleiches Rückrechnen wie oben, ABER wenn du power-invariant
-//    nutzt, musst du die Normierung konsistent halten.
-//    (Meistens nimmt man trotzdem genau diese Rückformel.)
-// ============================================================
-inline void inv_clarke_power(double alpha, double beta, double &ia, double &ib, double &ic)
-{
-    // identisch in der Praxis verwendet:
-    inv_clarke_amp(alpha, beta, ia, ib, ic);
-}
-
-// ============================================================
-// 7) PARK (Standard, FOC üblich)
-//    d =  cos*alpha + sin*beta
-//    q = -sin*alpha + cos*beta
-// ============================================================
-inline void park_std(double alpha, double beta,
-                     double sin_theta, double cos_theta,
-                     double &d, double &q)
-{
-    d = cos_theta * alpha + sin_theta * beta;
-    q = -sin_theta * alpha + cos_theta * beta;
-}
-
-// ============================================================
-// 8) INVERSE PARK (Standard)
-//    alpha = cos*d - sin*q
-//    beta  = sin*d + cos*q
-// ============================================================
-inline void inv_park_std(double d, double q,
-                         double sin_theta, double cos_theta,
-                         double &alpha, double &beta)
-{
-    alpha = cos_theta * d - sin_theta * q;
-    beta = sin_theta * d + cos_theta * q;
-}
-
-// ============================================================
-// 9) PARK (Alternative Konvention - Vorzeichen anders)
-//    d =  cos*alpha - sin*beta
-//    q =  sin*alpha + cos*beta
-//    (Wird manchmal benutzt -> dann muss inverse auch dazu passen!)
-// ============================================================
-inline void park_alt(double alpha, double beta,
-                     double sin_theta, double cos_theta,
-                     double &d, double &q)
-{
-    d = cos_theta * alpha - sin_theta * beta;
-    q = sin_theta * alpha + cos_theta * beta;
-}
-
-// ============================================================
-// 10) INVERSE PARK (Alternative Konvention passend zu park_alt)
-// ============================================================
-inline void inv_park_alt(double d, double q,
-                         double sin_theta, double cos_theta,
-                         double &alpha, double &beta)
-{
-    alpha = cos_theta * d + sin_theta * q;
-    beta = -sin_theta * d + cos_theta * q;
-}
-
-// ============================================================
-// 1) CLARKE (Amplitude-invariant) - 2 Strommessungen (ia, ib)
-//    Annahme: ic = -ia - ib
-//    alpha = ia
-//    beta  = (ia + 2*ib)/√3
-// ============================================================
-inline void clarke_2shunt_amp(float ia, float ib, float &alpha, float &beta)
-{
-    alpha = ia;
-    beta = (ia + 2.0 * ib) * one_over_sqrt3;
-}
-
-// ============================================================
-// 2) CLARKE (Amplitude-invariant) - mit 3 Phasen (ia, ib, ic)
-//    alpha = ia
-//    beta  = (ib - ic)/√3      (wenn ia+ib+ic=0)
-// ============================================================
-inline void clarke_3shunt_amp(float ia, float ib, float ic, float &alpha, float &beta)
-{
-    (void)ib; // optional, falls du nur ic nutzt
-    alpha = ia;
-    beta = (ib - ic) * one_over_sqrt3;
-}
-
-// ============================================================
-// 3) CLARKE (Power-invariant, "2/3-Variante") - 3 Phasen (ia,ib,ic)
-//    alpha = 2/3 * (ia - 1/2*ib - 1/2*ic)
-//    beta  = 2/3 * (√3/2 * (ib - ic))
-// ============================================================
-inline void clarke_3shunt_power(float ia, float ib, float ic, float &alpha, float &beta)
-{
-    alpha = two_over_3 * (ia + minus_one_over_2 * ib + minus_one_over_2 * ic);
-    beta = two_over_3 * (sqrt3_over_2 * (ib - ic));
-}
-
-// ============================================================
-// 4) CLARKE (Power-invariant, "2/3-Variante") - nur 2 Messungen (ia, ib)
-//    ic = -ia - ib eingesetzt => gleiche Normierung wie oben
-// ============================================================
-inline void clarke_2shunt_power(float ia, float ib, float &alpha, float &beta)
-{
-    const float ic = -ia - ib;
-    clarke_3shunt_power(ia, ib, ic, alpha, beta);
-}
-
-// ============================================================
-// 5) INVERSE CLARKE (Amplitude-invariant) -> (a,b,c)
-//    a = alpha
-//    b = -1/2*alpha + √3/2*beta
-//    c = -1/2*alpha - √3/2*beta
-// ============================================================
-inline void inv_clarke_amp(float alpha, float beta, float &ia, float &ib, float &ic)
-{
-    ia = alpha;
-    ib = minus_one_over_2 * alpha + sqrt3_over_2 * beta;
-    ic = minus_one_over_2 * alpha - sqrt3_over_2 * beta;
-}
-
-// ============================================================
-// 6) INVERSE CLARKE (Power-invariant) -> (a,b,c)
-//    Gleiches Rückrechnen wie oben, ABER wenn du power-invariant
-//    nutzt, musst du die Normierung konsistent halten.
-//    (Meistens nimmt man trotzdem genau diese Rückformel.)
-// ============================================================
-inline void inv_clarke_power(float alpha, float beta, float &ia, float &ib, float &ic)
-{
-    // identisch in der Praxis verwendet:
-    inv_clarke_amp(alpha, beta, ia, ib, ic);
-}
-
-// ============================================================
-// 7) PARK (Standard, FOC üblich)
-//    d =  cos*alpha + sin*beta
-//    q = -sin*alpha + cos*beta
-// ============================================================
-inline void park_std(float alpha, float beta,
-                     float sin_theta, float cos_theta,
-                     float &d, float &q)
-{
-    d = cos_theta * alpha + sin_theta * beta;
-    q = -sin_theta * alpha + cos_theta * beta;
-}
-
-// ============================================================
-// 8) INVERSE PARK (Standard)
-//    alpha = cos*d - sin*q
-//    beta  = sin*d + cos*q
-// ============================================================
-inline void inv_park_std(float d, float q,
-                         float sin_theta, float cos_theta,
-                         float &alpha, float &beta)
-{
-    alpha = cos_theta * d - sin_theta * q;
-    beta = sin_theta * d + cos_theta * q;
-}
-
-// ============================================================
-// 9) PARK (Alternative Konvention - Vorzeichen anders)
-//    d =  cos*alpha - sin*beta
-//    q =  sin*alpha + cos*beta
-//    (Wird manchmal benutzt -> dann muss inverse auch dazu passen!)
-// ============================================================
-inline void park_alt(float alpha, float beta,
-                     float sin_theta, float cos_theta,
-                     float &d, float &q)
-{
-    d = cos_theta * alpha - sin_theta * beta;
-    q = sin_theta * alpha + cos_theta * beta;
-}
-
-// ============================================================
-// 10) INVERSE PARK (Alternative Konvention passend zu park_alt)
-// ============================================================
-inline void inv_park_alt(float d, float q,
-                         float sin_theta, float cos_theta,
-                         float &alpha, float &beta)
-{
-    alpha = cos_theta * d + sin_theta * q;
-    beta = -sin_theta * d + cos_theta * q;
-}
-
-#endif
+#endif // CLARK_PARK_HPP
