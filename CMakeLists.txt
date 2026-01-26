@@ -1,10 +1,16 @@
 cmake_minimum_required(VERSION 3.16)
 project(cpp_lib LANGUAGES CXX)
 
+# Math
 add_subdirectory(Core/Math/crc)
 add_subdirectory(Core/Math/clark_park)
+add_subdirectory(Core/Math/svpwm)
+
+# Control
 add_subdirectory(Core/Control/pid)
 add_subdirectory(Core/Control/cntr_system)
+
+# Helper
 add_subdirectory(Helper/csv_parser)
 
 # add_subdirectory(... weitere module ...)

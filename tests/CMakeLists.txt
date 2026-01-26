@@ -61,3 +61,13 @@ target_compile_definitions(test_control PRIVATE
   TEST_DATA_PIDF_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}/control/GRK_input_output_pidf.csv\"
 )
 gtest_discover_tests(test_control)
+
+# ---------- CRC ----------
+add_executable(test_svpwm
+  svpwm_test/test_svpwm.cpp
+)
+target_link_libraries(test_svpwm PRIVATE
+  math::svpwm
+  GTest::gtest_main
+)
+gtest_discover_tests(test_svpwm)

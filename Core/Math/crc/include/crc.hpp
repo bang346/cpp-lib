@@ -1,3 +1,6 @@
+#ifndef CRC_HPP
+#define CRC_HPP
+
 #include <cstdint>
 #include <cstddef>
 #include <type_traits>
@@ -59,3 +62,5 @@ constexpr CrcT crc_compute(const uint8_t *data,
 
     return static_cast<CrcT>(crc ^ xor_out);
 }
+
+#endif
