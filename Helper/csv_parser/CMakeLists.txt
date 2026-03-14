@@ -6,7 +6,7 @@ FetchContent_Declare(
     csv
     GIT_REPOSITORY https://github.com/vincentlaucsb/csv-parser.git
     GIT_SHALLOW TRUE
-    GIT_TAG 2.2.1
+    GIT_TAG 2.5.1
 )
 
 FetchContent_MakeAvailable(csv)
