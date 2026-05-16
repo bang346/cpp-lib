@@ -10,6 +10,9 @@ add_subdirectory(Core/Math/svpwm)
 add_subdirectory(Core/Control/pid)
 add_subdirectory(Core/Control/cntr_system)
 
+# HAL
+add_subdirectory(Hal/stm32/stm32_spi)
+
 # Helper
 add_subdirectory(Helper/csv_parser)
 
