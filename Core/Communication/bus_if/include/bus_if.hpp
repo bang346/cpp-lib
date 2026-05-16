@@ -1,11 +1,11 @@
-#ifndef COMMUNICATION_IF_HPP
-#define COMMUNICATION_IF_HPP
+#ifndef BUS_IF_HPP
+#define BUS_IF_HPP
 
 #include <stdint.h>
 
 /// @brief Pure Virtual Interface Class for communication
 /// @details    Class must be overwritten for example SPI, UART, etc
-class communication_if
+class bus_if
 {
 private:
     /* data */
