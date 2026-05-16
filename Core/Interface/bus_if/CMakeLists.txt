@@ -4,7 +4,7 @@ add_library(bus_if STATIC
     bus_if.cpp
 )
 
-add_library(Communication::bus_if ALIAS bus_if)
+add_library(Interface::bus_if ALIAS bus_if)
 
 target_include_directories(bus_if PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/include

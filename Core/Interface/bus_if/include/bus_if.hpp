@@ -17,10 +17,17 @@ public:
     virtual int transmit(const uint8_t *const data, const uint8_t len) const = 0;
 
     /// @brief Method prototype to receive data
-    /// @param data[out] Pointer to the data buffer
+    /// @param data[out]    Pointer to the data buffer
     /// @param len  Length of the data
     /// @return     0 = success
     virtual int receive(uint8_t *const data, const uint8_t len) const = 0;
+
+    /// @brief Method prototype to receive and send data
+    /// @param data_tx[out] Pointer to the data out buffer
+    /// @param data_rx[in]  Pointer to the data in buffer
+    /// @param len          Length of the data
+    /// @return
+    virtual int transmitreceive(uint8_t *const data_tx, uint8_t *data_rx, const uint8_t len) const = 0;
 };
 
 #endif
