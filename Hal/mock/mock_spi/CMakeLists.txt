@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 3.23)
 
-target_include_directories(BUS_IF_PATH PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Interface/bus_if")
-add_subdirectory(BUS_IF_PATH)
-
 add_library(stm32_spi STATIC
     stm32_spi.cpp
 )

@@ -62,7 +62,7 @@ target_compile_definitions(test_control PRIVATE
 )
 gtest_discover_tests(test_control)
 
-# ---------- CRC ----------
+# ---------- SVPWM ----------
 add_executable(test_svpwm
   svpwm_test/test_svpwm.cpp
 )
@@ -71,3 +71,15 @@ target_link_libraries(test_svpwm PRIVATE
   GTest::gtest_main
 )
 gtest_discover_tests(test_svpwm)
+
+# ---------- PARTS ----------
+add_executable(test_parts
+  parts/test_parts.cpp
+)
+target_link_libraries(test_parts PRIVATE
+  parts::DRV8353
+  Interface::bus_if
+  GTest::gtest_main
+  helper::prittyprinting
+)
+gtest_discover_tests(test_parts)

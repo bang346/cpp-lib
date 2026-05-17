@@ -117,7 +117,7 @@ TEST(ClosedLoopTest, PIDFcontrolSystemTrajectory)
         double e = w - y;
         double u = pid.update(e);
         y = plant.update(u);
-        // 👇 Hier wird dein gemessenes y in die CSV geschrieben
+        // Hier wird dein gemessenes y in die CSV geschrieben
         // appendMeasuredValueToCsv(w, y_expected, y);
         SCOPED_TRACE("k = " + std::to_string(k));
         EXPECT_NEAR(y, y_expected, 0.01);
