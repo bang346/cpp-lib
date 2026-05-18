@@ -5,20 +5,28 @@
 
 #include "bus_if.hpp"
 
-class DRV8353
-{
-// private:
-//     bus_if &bus_;
-//     gpio_if &enable_;
+// Treiber als Template
+template<typename CsPin, typename EnPin, typename FaultPin, typename Delay>
+class DRV8353 {
+public:
+    explicit DRV8353(bus_if& spi) : spi_(spi) {}
 
-// public:
-//     DRV8353(bus_if &bus, gpio_if &enable);
+    void init() {
+        EnPin::high();
+        Delay::ms(10);
+    }
 
-//     ~DRV8353() = default;
+    void writeReg(uint16_t v) {
+        CsPin::low();
+        uint8_t tx[2] = { uint8_t(v>>8), uint8_t(v) };
+        spi_.transmit(tx, nullptr, 2);
+        CsPin::high();
+    }
 
-//     int init(delay_if &delay);
+    bool fault() { return FaultPin::read(); }
 
-//     uint16_t ReadReg(const uint8_t &addr);
+private:
+    bus_if& spi_;
 };
 
 #endif

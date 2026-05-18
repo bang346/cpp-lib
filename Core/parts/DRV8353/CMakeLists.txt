@@ -10,6 +10,6 @@ target_include_directories(DRV8353 PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/include
 )
 
-target_link_libraries(DRV8353 PUBLIC Interface::bus_if)
+target_link_libraries(DRV8353 PRIVATE Interface::bus_if)
 
 target_compile_features(DRV8353 PUBLIC cxx_std_17)

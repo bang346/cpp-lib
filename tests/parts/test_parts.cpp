@@ -3,40 +3,34 @@
 #include <iostream>
 
 #include "prittyprinting.hpp"
+#include "mock_spi.hpp"
+#include "DRV8353.hpp"
 
-
+// GPIO-Policies (plattformabhängig)
 template<int Port, int Pin>
-struct CsPin {
-    static void low()  { std::cout << GREEN << "LOW\n";}
-    static void high() { std::cout << GREEN << "HIGH\n";}
+struct GpioOut {
+    static inline void high() { std::cout << BOLDBLUE << "Set Port: " << Port << " Pin: " << Pin << RESET << std::endl; }
+    static inline void low()  { std::cout << BOLDBLUE << "Reset Port: " << Port << " Pin: " << Pin << RESET << std::endl; }
 };
 
-class DRV8353 {
-public:
-    template<typename Cs>
-    DRV8353(Cs)
-    {
-        setCsLow = &Cs::low;
-        setCsHigh = &Cs::high;
-    }
-    void writeReg(uint16_t data) {
-        setCsLow();
-        setCsHigh();
-    }
-private:
-    void (*setCsLow)();   // Zeiger auf Funktion Cs::low
-    void (*setCsHigh)();  // Zeiger auf Funktion Cs::high
+struct DelayPolicy {
+    static inline void us(uint32_t t) { std::cout << BOLDBLUE << "sleep for" << t << " us" << std::endl;}
+    static inline void ms(uint32_t t) { std::cout << BOLDBLUE << "sleep for" << t << " ms" << std::endl; }
 };
 
 
 
 TEST(SPI, Example)
 {
-    std::cout << GREEN << "START" << std::endl;
-using MyCs = CsPin<5, 4>;
+using CS    = GpioOut<1, 4>;
+using EN    = GpioOut<1, 5>;
+using FAULT = GpioOut<1, 6>;
+using DLY   = DelayPolicy;
 
-DRV8353 drv(MyCs{});
-drv.writeReg(0x00);
+mock_spi mock;
+DRV8353<CS, EN, FAULT, DLY> drv(mock);
 
-
+drv.init();
 }
+
+
