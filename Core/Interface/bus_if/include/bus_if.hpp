@@ -10,6 +10,10 @@ class bus_if
 private:
     /* data */
 public:
+
+    /// @brief Destructor
+    /// @note       Must be virtual for mocking
+    virtual ~bus_if() = default;
     /// @brief Method prototype to send data
     /// @param data[in] Data wich will be send
     /// @param len  Length of the data

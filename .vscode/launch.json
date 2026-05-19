@@ -7,7 +7,7 @@
     "configurations": [
         {
             "name": "Debug GoogleTests",
-            "type": "cppdbg",
+            "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/build/tests/test_parts",
             "args": [

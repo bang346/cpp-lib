@@ -6,7 +6,7 @@
 #include "bus_if.hpp"
 #include <gmock/gmock.h>
 
-/// @brief STM32 Spi Interface
+/// @brief MOCK Spi Interface
 class mock_spi : public bus_if
 {
 

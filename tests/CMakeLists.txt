@@ -69,7 +69,6 @@ add_executable(test_parts
 
 target_link_libraries(test_parts PRIVATE
   parts::DRV8353
-  Interface::bus_if
   helper::prittyprinting
   hal::mock_spi
   gmock_main

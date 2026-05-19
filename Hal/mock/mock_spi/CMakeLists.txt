@@ -8,7 +8,7 @@ target_include_directories(mock_spi PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/include
 )
 
-target_link_libraries(mock_spi PRIVATE
+target_link_libraries(mock_spi PUBLIC
     Interface::bus_if
     gmock
 )
