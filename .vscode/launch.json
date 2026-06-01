@@ -15,6 +15,7 @@
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
+            "preLaunchTask": "CMake: Build",
             "environment": [],
             "externalConsole": true,
             "MIMode": "lldb",

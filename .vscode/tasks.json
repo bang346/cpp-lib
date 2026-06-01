@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CMake: Configure",
+      "type": "shell",
+      "options": { "cwd": "${workspaceFolder}" },
+      "command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug",
+      "problemMatcher": [
+        "$gcc",
+        "$msCompile",
+        "$clang"
+      ]
+    },
+    {
+      "label": "CMake: Build",
+      "type": "shell",
+      "options": { "cwd": "${workspaceFolder}" },
+      "command": "cmake --build build --config Debug --parallel",
+      "dependsOn": "CMake: Configure",
+      "group": "build",
+      "problemMatcher": [
+        "$gcc",
+        "$msCompile",
+        "$clang"
+      ]
+    }
+  ]
+}
