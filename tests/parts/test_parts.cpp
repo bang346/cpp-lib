@@ -89,13 +89,13 @@ TEST(SPI, WriteReg)
     NiceMock<mock_spi> mock;
     DRV8353<CS, EN, FAULT, DLY> drv(mock);
 
-    const uint8_t expected_tx[] = {0x1, 0xff};
+    const uint8_t expected_tx[] = {0x1F, 0xff};
     const uint8_t fake_rx[]    = {0x55, 0x66};
 
     EXPECT_CALL(mock, transmitreceive(_, _, 2))
         .WillOnce(Invoke([&](uint8_t* data_tx, uint8_t* data_rx, const uint8_t len){
             EXPECT_EQ(len, 2);
-
+            
             EXPECT_THAT(
                 std::vector<uint8_t>(data_tx, data_tx + len),
                 ElementsAreArray(expected_tx)
