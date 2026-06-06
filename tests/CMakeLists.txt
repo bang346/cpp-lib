@@ -75,3 +75,15 @@ target_link_libraries(test_parts PRIVATE
 )
 
 gtest_discover_tests(test_parts)
+
+# ---------- Motor ----------
+add_executable(test_motor
+  motor/test_motor.cpp
+)
+
+target_link_libraries(test_motor PRIVATE
+  motor::sixstep
+  gmock_main
+)
+
+gtest_discover_tests(test_motor)

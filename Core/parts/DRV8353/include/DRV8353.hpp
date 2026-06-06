@@ -29,6 +29,7 @@ public:
     int init()
     {
         CsPin::high();
+        EnPin::high();
         return 0;
     }
 
@@ -68,11 +69,13 @@ public:
             return 0xffff;
         }
         uint16_t data_rx = 0;
-        uint16_t data_tx = static_cast<uint16_t>((0U << 15) | ((addr & 0x0F) << 10) | (data & 0x3ff));
-        return spi_.transmitreceive(reinterpret_cast<uint8_t *>(&data_tx), 
-                                    reinterpret_cast<uint8_t *>(&data_rx), 
-                                    2
-                                    );
+        uint16_t data_tx = static_cast<uint16_t>((0U << 15) | ((addr & 0x0F) << 11) | (data & DRV8353_REG_DATA_MASK));
+        CsPin::low();
+        uint16_t ret = spi_.transmitreceive(reinterpret_cast<uint8_t *>(&data_tx),
+                                    reinterpret_cast<uint8_t *>(&data_rx),
+                                    1);
+        CsPin::high();
+        return ret;
     }
 
     bool fault() const { return FaultPin::read(); }

@@ -29,6 +29,9 @@ add_subdirectory(Core/Interface/bus_if)
 # add_subdirectory(Hal/stm32/stm32_spi)
 add_subdirectory(Hal/mock/mock_spi)
 
+# Motor
+add_subdirectory(Core/Motor/sixstep)
+
 # PARTS
 add_subdirectory(Core/parts/DRV8353)
 
@@ -42,6 +45,6 @@ option(CPPLIB_BUILD_TESTS "Build cpp-lib unit tests" OFF)
 # To build with tests run: cmake -S . -B build -DCPPLIB_BUILD_TESTS=ON
 # To build with Debug:     cmake -S . -B build -DCPPLIB_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Debug
 if(PROJECT_IS_TOP_LEVEL AND CPPLIB_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(tests)
+  enable_testing()
+  add_subdirectory(tests)
 endif()

@@ -2,63 +2,63 @@
     // Verwendet IntelliSense zum Ermitteln möglicher Attribute.
     // Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
     // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
-{
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Debug GoogleTests",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/tests/test_parts",
-            "args": [
-                "--gtest_color=yes"
-            ],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "preLaunchTask": "CMake: Build",
-            "environment": [],
-            "externalConsole": true,
-            "MIMode": "lldb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            // "preLaunchTask": "build tests"
-        },
-        {
-            "name": "Debug single GoogleTest",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/tests/app_tests",
-            "args": [
-                "--gtest_filter=${input:gtestFilter}",
-                "--gtest_color=yes"
-            ],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "build tests"
-        }
-    ],
-    "inputs": [
-        {
-            "id": "gtestFilter",
-            "type": "promptString",
-            "description": "GoogleTest Filter, z.B. DRV8353Test.InitTogglesEnable",
-            "default": "*"
-        }
-    ]
-}
+    {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Debug GoogleTests",
+                "type": "lldb",
+                "request": "launch",
+                "program": "${workspaceFolder}/build/tests/Debug/test_motor.exe",
+                "args": [
+                    "--gtest_color=yes"
+                ],
+                "stopAtEntry": false,
+                "cwd": "${workspaceFolder}",
+                "preLaunchTask": "CMake: Build",
+                "environment": [],
+                "externalConsole": true,
+                "MIMode": "lldb",
+                "setupCommands": [
+                    {
+                        "description": "Enable pretty-printing for gdb",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ],
+                // "preLaunchTask": "build tests"
+            },
+            {
+                "name": "Debug single GoogleTest",
+                "type": "cppdbg",
+                "request": "launch",
+                "program": "${workspaceFolder}/build/tests/app_tests",
+                "args": [
+                    "--gtest_filter=${input:gtestFilter}",
+                    "--gtest_color=yes"
+                ],
+                "stopAtEntry": false,
+                "cwd": "${workspaceFolder}",
+                "environment": [],
+                "externalConsole": false,
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {
+                        "description": "Enable pretty-printing for gdb",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ],
+                "preLaunchTask": "build tests"
+            }
+        ],
+        "inputs": [
+            {
+                "id": "gtestFilter",
+                "type": "promptString",
+                "description": "GoogleTest Filter, z.B. DRV8353Test.InitTogglesEnable",
+                "default": "*"
+            }
+        ]
+    }
 }
