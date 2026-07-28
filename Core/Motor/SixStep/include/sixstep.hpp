@@ -43,6 +43,11 @@ namespace SixStep_NS
     ///                 - set_high_z(SixStep_NS::channel_e chan)
     ///                 - set_duty(const uint16_t &value)
     ///                 - init()
+    /// @details        SixStep Explanation:
+    ///                 1. Every time the Hall sensor readings change, the state
+    ///                 of the three MOSFET half-bridges must change.
+    ///                 The new configuration depends on the desired direction of rotation.
+    ///                 2. The half-bridges remain in their current state until the Hall sensors change.
     template <typename Bridge>
     class SixStep
     {
@@ -51,8 +56,8 @@ namespace SixStep_NS
         Bridge &bridge_; // HW-Implementation
         using state_type = int;
         static inline constexpr int lookup_table_id_[8] = {-1, 0, 2, 1, 4, 5, 3, -1};
-        static inline constexpr int lookup_table_step_[2][6] = {{4, 5, 6, 1, 2, 3},
-                                                                {1, 2, 3, 4, 5, 6}};
+        static inline constexpr int lookup_table_step_[2][6] = {{3, 4, 5, 0, 1, 2},
+                                                                {0, 1, 2, 3, 4, 5}};
         static inline constexpr channel_state_e sequency[6][3] =
             {
                 {channel_state_e::GND, channel_state_e::FLOATING, channel_state_e::PWM},
@@ -101,7 +106,6 @@ namespace SixStep_NS
                 bridge_.set_high_z((channel_e)i);
                 last_[i] = channel_state_e::FLOATING;
             }
-
         }
 
         /// @brief Commutation step

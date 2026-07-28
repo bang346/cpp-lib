@@ -1,0 +1,32 @@
+communication/
+├── transport/                  // Interfaces
+│   ├── IByteTransport.hpp
+│   ├── Stm32UartDma.hpp
+│   ├── LinuxSerialPort.hpp
+│   └── MockTransport.hpp
+│
+├── buffering/                  // Ringbuffer / Vector ...
+│   └── RingBuffer.hpp
+│
+├── framing/                    
+│   ├── CobsFramer.hpp
+│   └── LengthFramer.hpp
+│
+├── integrity/
+│   ├── Crc16.hpp
+│   └── Crc32.hpp
+│
+├── serialization/
+│   ├── BinaryReader.hpp
+│   ├── BinaryWriter.hpp
+│   └── Serializer.hpp
+│
+├── protocol/
+│   ├── FrameHeader.hpp
+│   ├── Protocol.hpp
+│   └── MessageDispatcher.hpp
+│
+└── utility/
+    ├── Result.hpp
+    ├── Clock.hpp
+    └── CommunicationStatistics.hpp

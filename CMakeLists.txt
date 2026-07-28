@@ -39,6 +39,9 @@ add_subdirectory(Core/parts/DRV8353)
 add_subdirectory(Helper/csv_parser)
 add_subdirectory(Helper/prittyprinting)
 
+# Communication
+add_subdirectory(Core/Communication)
+
 # add_subdirectory(... weitere module ...)
 option(CPPLIB_BUILD_TESTS "Build cpp-lib unit tests" OFF)
 

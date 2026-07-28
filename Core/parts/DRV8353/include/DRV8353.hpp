@@ -14,6 +14,8 @@
 template <typename CsPin, typename EnPin, typename FaultPin, typename Delay>
 class DRV8353
 {
+    using register_t = uint16_t;
+
 public:
     /// @brief Class Constructor
     /// @note           explicit prohibits unwanted initializations
@@ -30,6 +32,45 @@ public:
     {
         CsPin::high();
         EnPin::high();
+        register_t register_value = 0;
+        // 1. Gate Drive HS Field
+        // @see p.60
+        Delay::us(10);
+        register_value |= DRV8353_LOCK_UNLOCK | DRV8353_IDRIVEP_HS_100MA | DRV8353_IDRIVEN_HS_200MA;
+        WriteReg(DRV8353_GATE_DRIVE_HS_ADDR, register_value);
+        uint16_t buffer = 0;
+        buffer = (ReadReg(DRV8353_GATE_DRIVE_HS_ADDR) & DRV8353_REG_DATA_MASK);
+        if (buffer != register_value)
+        {
+            return -1;
+        }
+        register_value = 0;
+        buffer = 0;
+
+        // 2. Gate Drive LS Register Field
+        // @see p.61
+        Delay::us(10);
+        register_value |= DRV8353_TDRIVE_1000NS | DRV8353_IDRIVEP_LS_100MA | DRV8353_IDRIVEN_LS_200MA;
+        WriteReg(DRV8353_GATE_DRIVE_LS_ADDR, register_value);
+        buffer = (ReadReg(DRV8353_GATE_DRIVE_LS_ADDR) & DRV8353_REG_DATA_MASK);
+        if (buffer != register_value)
+        {
+            return -1;
+        }
+        register_value = 0;
+        buffer = 0;
+        // 3. OCP Control Field
+        // @see p.62
+        // @details         To clear the latched reset toggle enable or reset CLR_FLT
+        Delay::us(10);
+        register_value |= DRV8353_OCP_MODE_LATCHED_FAULT | DRV8353_VDS_LVL_0P40V;
+        WriteReg(DRV8353_OCP_CONTROL_ADDR, register_value);
+        buffer = (ReadReg(DRV8353_OCP_CONTROL_ADDR) & DRV8353_REG_DATA_MASK);
+        if (buffer != register_value)
+        {
+            return -1;
+        }
+        register_value = 0;
         return 0;
     }
 
@@ -48,12 +89,12 @@ public:
 
         tx = static_cast<uint16_t>((1U << 15) | ((addr & 0x0F) << 11));
 
-        CsPin::low();
+        // CsPin::low();
         spi_.transmitreceive(
             reinterpret_cast<uint8_t *>(&tx),
             reinterpret_cast<uint8_t *>(&rx),
-            2);
-        CsPin::high();
+            1);
+        // CsPin::high();
         return rx & DRV8353_REG_DATA_MASK;
     }
 
@@ -70,11 +111,11 @@ public:
         }
         uint16_t data_rx = 0;
         uint16_t data_tx = static_cast<uint16_t>((0U << 15) | ((addr & 0x0F) << 11) | (data & DRV8353_REG_DATA_MASK));
-        CsPin::low();
+        // CsPin::low();
         uint16_t ret = spi_.transmitreceive(reinterpret_cast<uint8_t *>(&data_tx),
-                                    reinterpret_cast<uint8_t *>(&data_rx),
-                                    1);
-        CsPin::high();
+                                            reinterpret_cast<uint8_t *>(&data_rx),
+                                            1);
+        // CsPin::high();
         return ret;
     }
 
