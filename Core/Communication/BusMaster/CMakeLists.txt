@@ -15,5 +15,6 @@ target_link_libraries(BusMaster PUBLIC
     Communication::archive
     math::crc
     Interface::bus_if
+    Interface::coder_if
 )
 target_compile_features(BusMaster PUBLIC cxx_std_17)

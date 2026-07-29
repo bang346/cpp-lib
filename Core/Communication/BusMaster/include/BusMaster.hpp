@@ -2,10 +2,13 @@
 #define BUS_MASTER_HPP
 
 #include <cstdint>
+#include <array>
 
 #include "bus_if.hpp"
 #include "crc.hpp"
 #include "archive_defs.hpp"
+#include "coder_if.hpp"
+#include "binary_container.hpp"
 
 namespace BusMaster_NS
 {
@@ -55,30 +58,56 @@ Eine unbekannte Protokollversion wird erkannt.
         CrcMismatch,
         UnsupportedVersion,
         HardwareError,
-        Overflow
+        Overflow,
+        serialize_failed
     };
 
     struct FrameHeader
     {
-        std::uint8_t startbyte{};
+        static constexpr std::uint8_t startbyte = 0xF7;
         MessageId messageid{};
-        std::uint8_t Version{};
+        static constexpr std::uint8_t Version = 0;
         std::uint16_t PayloadLength{};
     };
 
-    struct Frame
-    {
-        FrameHeader header{};
-        const std::uint8_t *Payload{};
-    };
-
+    template <typename std::size_t size>
     class BusMasterTransmit
     {
     private:
-        /* data */
+        std::array<uint8_t, size> buffer_;
+        FrameHeader frame_;
+
     public:
-        BusMasterTransmit(/* args */) = default;
+        BusMasterTransmit(/* args */)
+            : buffer_{},
+              frame_{}
+        {
+        }
         virtual ~BusMasterTransmit() = default;
+
+        template <typename Message>
+        CommError transmit(Message &message, const bus_if *bus_interface, const coder_if *coder)
+        {
+            BinaryWriter writer(
+                buffer_.data(),
+                buffer_.size());
+
+            frame_.messageid = MessageTraits<Message>::id;
+            frame_.PayloadLength = MessageTraits<Message>::maximumSize;
+            if (!writer.write(frame_.startbyte) || !writer.write(static_cast<std::uint16_t>(frame_.messageid)) || !writer.write(frame_.PayloadLength) || !writer.write(frame_.PayloadLength))
+            {
+                return CommError::BufferTooSmall;
+            }
+
+            if (!message.serialize(writer))
+            {
+                return CommError::BufferTooSmall;
+            }
+
+            auto new_len = coder->code(buffer_.data(), writer.size(), buffer_.data());
+            bus_interface->transmit(buffer_.data(), new_len);
+            return CommError::None;
+        }
     };
 
 } // namespace BusMaster_NS

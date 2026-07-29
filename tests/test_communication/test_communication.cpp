@@ -5,6 +5,12 @@
 #include "BusMaster.hpp"
 #include "crc.hpp"
 #include "coder.hpp"
+#include "mock_spi.hpp"
+#include "archive_generic.hpp"
+#include "archive_example.hpp"
+
+using ::testing::_;
+using ::testing::Invoke;
 
 TEST(Communication, Serialize)
 {
@@ -67,4 +73,32 @@ TEST(Communication, CoderCrC)
     ASSERT_EQ(result_array, payload);
     ASSERT_TRUE(coder.decode_result());
     int z = 0;
+}
+
+TEST(Communication, Transmit)
+{
+    BusMaster_NS::BusMasterTransmit<32> DUT;
+    coder_crc<std::uint16_t> coder(0xFFFFu, 0x1021u);
+    mock_spi spi;
+
+    std::vector<uint8_t> captured_data;
+    uint8_t captured_len = 0;
+
+    ConfigureGeneric<12> command{
+        0xfA,
+        {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
+
+    EXPECT_CALL(spi, transmit(_, _))
+        .WillOnce(Invoke(
+            [&](const uint8_t *data, const uint8_t len) -> int
+            {
+                captured_len = len;
+
+                // Inhalt kopieren, damit er nach dem Aufruf noch verfügbar ist
+                captured_data.assign(data, data + len);
+
+                return 0;
+            }));
+
+    DUT.transmit(command, &spi, &coder);
 }

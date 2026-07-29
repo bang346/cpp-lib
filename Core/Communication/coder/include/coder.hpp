@@ -7,7 +7,7 @@
 #include "crc.hpp"
 
 template <typename CrcT>
-class coder_crc : coder_if
+class coder_crc : public coder_if
 {
 private:
     const CrcT init_;
