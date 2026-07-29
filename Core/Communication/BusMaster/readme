@@ -1,0 +1,6 @@
+MotorCommand // Struct z.B. Motorcommand wird an die Klasse übergeben Frame wird selber erzeugt
+    ↓ serialisieren
+        Payload -
+    Bytes // erzeuge Payload mit serialize
+    ↓ Startbyte + Message - ID + Länge + Payload + CRC // In Frame einfügen
+    ↓ Transport.write(...) // Uart write+

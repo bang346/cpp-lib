@@ -1,0 +1,4 @@
+add_subdirectory(bus_if)
+add_subdirectory(coder_if)
+add_subdirectory(delay_if)
+add_subdirectory(gpio_if)

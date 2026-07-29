@@ -23,7 +23,7 @@ add_subdirectory(Core/Control/pid)
 add_subdirectory(Core/Control/cntr_system)
 
 # Interface
-add_subdirectory(Core/Interface/bus_if)
+add_subdirectory(Core/Interface)
 
 # HAL
 # add_subdirectory(Hal/stm32/stm32_spi)

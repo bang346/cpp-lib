@@ -5,9 +5,8 @@ add_executable(test_communication
 
 target_link_libraries(test_communication PRIVATE
     gmock_main
-    Communication::archive
-    Communication::binary_container
-    Communication::serialize
+    Communication::BusMaster
+    Communication::coder
 )
 
 gtest_discover_tests(test_communication)
