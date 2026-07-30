@@ -8,6 +8,7 @@ target_link_libraries(test_communication PRIVATE
     Communication::BusMaster
     Communication::coder
     hal::mock_spi
+    Communication::frame
 )
 
 gtest_discover_tests(test_communication)

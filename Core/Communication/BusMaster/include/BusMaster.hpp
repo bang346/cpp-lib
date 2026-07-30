@@ -9,6 +9,7 @@
 #include "archive_defs.hpp"
 #include "coder_if.hpp"
 #include "binary_container.hpp"
+#include "frame.hpp"
 
 namespace BusMaster_NS
 {
@@ -47,21 +48,6 @@ Ein unbekannter Nachrichtentyp wird sauber abgewiesen.
 Eine unbekannte Protokollversion wird erkannt.
     */
 
-    enum class CommError : std::int16_t
-    {
-        None,
-        Timeout,
-        Busy,
-        BufferTooSmall,
-        InvalidFrame,
-        InvalidLength,
-        CrcMismatch,
-        UnsupportedVersion,
-        HardwareError,
-        Overflow,
-        serialize_failed
-    };
-
     struct FrameHeader
     {
         static constexpr std::uint8_t startbyte = 0xF7;
@@ -86,7 +72,7 @@ Eine unbekannte Protokollversion wird erkannt.
         virtual ~BusMasterTransmit() = default;
 
         template <typename Message>
-        CommError transmit(Message &message, const bus_if *bus_interface, const coder_if *coder)
+        Frame_NS::CommError transmit(Message &message, const bus_if *bus_interface, const coder_if *coder)
         {
             BinaryWriter writer(
                 buffer_.data(),
@@ -96,17 +82,17 @@ Eine unbekannte Protokollversion wird erkannt.
             frame_.PayloadLength = MessageTraits<Message>::maximumSize;
             if (!writer.write(frame_.startbyte) || !writer.write(static_cast<std::uint16_t>(frame_.messageid)) || !writer.write(frame_.PayloadLength) || !writer.write(frame_.PayloadLength))
             {
-                return CommError::BufferTooSmall;
+                return Frame_NS::CommError::BufferTooSmall;
             }
 
             if (!message.serialize(writer))
             {
-                return CommError::BufferTooSmall;
+                return Frame_NS::CommError::BufferTooSmall;
             }
 
             auto new_len = coder->code(buffer_.data(), writer.size(), buffer_.data());
             bus_interface->transmit(buffer_.data(), new_len);
-            return CommError::None;
+            return Frame_NS::CommError::None;
         }
     };
 

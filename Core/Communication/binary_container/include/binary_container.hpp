@@ -159,10 +159,26 @@ public:
         return true;
     }
 
+    template <typename T, std::size_t N>
+    bool read(std::array<T, N> &values)
+    {
+        for (auto &value : values)
+        {
+            if (!read(value))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     bool finished() const
     {
         return position_ == size_;
     }
+
+    inline std::size_t size() const { return position_; }
 
 private:
     const std::uint8_t *buffer_;

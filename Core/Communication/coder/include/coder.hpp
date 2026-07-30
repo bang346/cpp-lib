@@ -104,4 +104,59 @@ public:
     }
 };
 
+template <typename CrcT>
+class crc_wrapper
+{
+private:
+    const CrcT init_;
+    const CrcT poly_;
+    const CrcBitOrder order_;
+    const CrcT xor_out_;
+
+    bool decode_result_;
+
+public:
+    /// @brief Constructor
+    /// @param init         Inital value for crc-calculation
+    /// @param poly         Polinominal
+    /// @param order        Bitorder
+    /// @param xor_out      Xor out
+    crc_wrapper(const CrcT &init, const CrcT &poly, const CrcBitOrder &order = CrcBitOrder::MsbFirst, CrcT xor_out = static_cast<CrcT>(0))
+        : init_{init},
+          poly_{poly},
+          order_{order},
+          xor_out_{xor_out},
+          decode_result_{false}
+    {
+    }
+
+    /// @brief Interface Method to code a message
+    /// @param data         Data wich will coded
+    /// @param len          len of the data
+    /// @param result       Coded data
+    /// @return             Len of the new data
+    virtual CrcT code(const std::uint8_t *data, const coder_if_NS::len_t &len) const
+    {
+        if (!data)
+        {
+            return 0;
+        }
+        return crc_compute<CrcT>(data, len, init_, poly_, order_, xor_out_);
+    };
+
+    /// @brief Interface Method to code a message
+    /// @param data         Data wich will coded
+    /// @param len          len of the data
+    /// @param result       Coded data
+    /// @return             Len of the new data
+    virtual CrcT update(const std::uint8_t *data, const CrcT &init, const coder_if_NS::len_t &len) const
+    {
+        if (!data)
+        {
+            return 0;
+        }
+        return crc_compute<CrcT>(data, len, init, poly_, order_, xor_out_);
+    };
+};
+
 #endif

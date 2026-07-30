@@ -7,7 +7,7 @@
         "configurations": [
             {
                 "name": "Debug GoogleTests",
-                "type": "lldb",
+                "type": "cppdbg",
                 "request": "launch",
                 "program": "${workspaceFolder}/build/tests/test_communication/Debug/test_communication.exe",
                 "args": [

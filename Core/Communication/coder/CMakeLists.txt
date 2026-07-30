@@ -11,8 +11,8 @@ target_include_directories(coder PUBLIC
 )
 
 target_link_libraries(coder PUBLIC
-    Interface::coder_if
     math::crc
+    Interface::coder_if
 )
 
 target_compile_features(coder PUBLIC cxx_std_17)
