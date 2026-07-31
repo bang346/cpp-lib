@@ -2,28 +2,47 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "CMake: Configure",
-      "type": "shell",
-      "options": { "cwd": "${workspaceFolder}" },
-      "command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug",
-      "problemMatcher": [
-        "$gcc",
-        "$msCompile",
-        "$clang"
-      ]
+      "label": "CMake: Configure Debug",
+      "type": "process",
+      "command": "cmake",
+      "args": [
+        "-S",
+        ".",
+        "-B",
+        "build",
+        "-DCPPLIB_BUILD_TESTS=ON",
+        "-DCMAKE_BUILD_TYPE=Debug"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
     },
     {
-      "label": "CMake: Build",
-      "type": "shell",
-      "options": { "cwd": "${workspaceFolder}" },
-      "command": "cmake --build build --config Debug --parallel",
-      "dependsOn": "CMake: Configure",
-      "group": "build",
-      "problemMatcher": [
-        "$gcc",
-        "$msCompile",
-        "$clang"
-      ]
+      "label": "CMake: Build Debug",
+      "type": "process",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "build"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: Configure + Build Debug",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "CMake: Configure Debug",
+        "CMake: Build Debug"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
     }
   ]
 }
