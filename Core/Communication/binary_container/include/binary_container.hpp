@@ -2,6 +2,7 @@
 #define BINARY_RW_HPP
 
 #include <array>
+#include <cstdint>
 
 /// @brief Class to serialize data
 /// @note           Serialization is little endian
