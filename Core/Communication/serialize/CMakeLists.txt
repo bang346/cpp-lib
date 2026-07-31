@@ -12,6 +12,7 @@ target_include_directories(serialize PUBLIC
 
 target_link_libraries(serialize PRIVATE
     Communication::binary_container
+    Communication::archive
 )
 
 target_compile_features(serialize PUBLIC cxx_std_17)
