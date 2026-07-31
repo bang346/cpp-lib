@@ -126,7 +126,7 @@ public:
             }
         }
 
-        if (buffer_.size() >= frameV1_header::FrameHeadSize_ && !head_received_)
+        if (received_ >= frameV1_header::FrameHeadSize_ && !head_received_)
         {
             BinaryReader reader(buffer_.data(), buffer_.size());
             if (!reader.read(framehead_.startbyte) || !reader.read(framehead_.version) || !reader.read(framehead_.messageid) || !reader.read(framehead_.len))
@@ -147,17 +147,10 @@ public:
             head_received_ = true;
         }
 
-        // for (size_t i = 0; i < len; i++)
-        // {
-        //     if (received_ >= framehead_.len)
-        //     {
-        //         return Frame_NS::CommError::None;
-        //     }
-        //     else if (received_ >= outputCapacity)
-        //     {
-        //         return Frame_NS::CommError::BufferTooSmall;
-        //     }
-        // }
+        if (!head_received_)
+        {
+            return Frame_NS::CommError::message_unfinished;
+        }
 
         while (input_received < payloadSize && received_ < framehead_.len)
         {
@@ -183,18 +176,28 @@ public:
                 << (8U * i);
         }
 
-        reset();
         if (crc != crcReceived)
         {
+            reset();
             return Frame_NS::CommError::CrcMismatch;
         }
         messageid = static_cast<MessageId>(framehead_.messageid);
+        outputSize = received_ - frameV1_header::FrameHeadSize_ - sizeof(CrcT);
+        reset();
         return Frame_NS::CommError::None;
     }
 
     virtual bool verify() const override { return true; };
 
-    void reset() {}
+    void reset()
+    {
+        framehead_.len = 0;
+        framehead_.messageid = 0;
+        framehead_.startbyte = 0;
+        framehead_.version = 0;
+        received_ = 0;
+        head_received_ = false;
+    }
 };
 
 #endif
