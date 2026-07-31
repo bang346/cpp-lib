@@ -30,7 +30,7 @@ add_subdirectory(Core/Interface)
 add_subdirectory(Hal/mock/mock_spi)
 
 # Motor
-add_subdirectory(Core/Motor/sixstep)
+add_subdirectory(Core/Motor/SixStep)
 
 # PARTS
 add_subdirectory(Core/parts/DRV8353)
