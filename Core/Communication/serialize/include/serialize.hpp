@@ -6,6 +6,7 @@
 #include <array>
 
 #include "binary_container.hpp"
+#include "archive_defs.hpp"
 
 /// @brief Function wich serializes an std::array
 /// @tparam Message         Messsage
