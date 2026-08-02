@@ -10,4 +10,9 @@ target_include_directories(stm32_bridge PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}/include
 )
 
+target_link_libraries(stm32_bridge PUBLIC
+    motor::sixstep
+    stm32cubemx
+)
+
 target_compile_features(stm32_bridge PUBLIC cxx_std_17)
