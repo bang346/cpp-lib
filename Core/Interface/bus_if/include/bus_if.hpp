@@ -10,7 +10,6 @@ class bus_if
 private:
     /* data */
 public:
-
     /// @brief Destructor
     /// @note       Must be virtual for mocking
     virtual ~bus_if() = default;

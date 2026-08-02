@@ -104,6 +104,14 @@ Enable the tests during configuration:
 ```bash
 cmake -S . -B build \
     -DCPPLIB_BUILD_TESTS=ON \
+    -DCPPLIB_TARGET=WINDOWS \
+    -DCMAKE_BUILD_TYPE=Debug
+```
+
+```bash
+cmake -S . -B build \
+    -DCPPLIB_BUILD_TESTS=ON \
+    -DCPPLIB_TARGET=STM32 \
     -DCMAKE_BUILD_TYPE=Debug
 ```
 

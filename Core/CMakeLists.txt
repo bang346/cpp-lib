@@ -1,0 +1,6 @@
+add_subdirectory(Communication)
+add_subdirectory(Control)
+add_subdirectory(Interface)
+add_subdirectory(Math)
+add_subdirectory(Motor)
+add_subdirectory(parts)

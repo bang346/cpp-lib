@@ -2,32 +2,48 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   test:
+    name: Test ${{ matrix.target }}
+
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            target: LINUX
+
+          - os: windows-latest
+            target: WINDOWS
+
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Clean build dir
-        run: cmake -E rm -rf build
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Configure
-        run: cmake -S . -B build -DCPPLIB_BUILD_TESTS=ON
+        run: >
+          cmake
+          -S .
+          -B build
+          -DCPPLIB_TARGET=${{ matrix.target }}
+          -DCPPLIB_BUILD_TESTS=ON
+          -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: cmake --build build --config Release
+        run: cmake --build build --config Release --parallel
 
       - name: Test
         run: ctest --test-dir build -C Release --output-on-failure

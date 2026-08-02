@@ -1,0 +1,5 @@
+add_subdirectory(stm32_bridge)
+add_subdirectory(stm32_delay)
+add_subdirectory(stm32_gpio)
+add_subdirectory(stm32_spi)
+add_subdirectory(stm32_uart)

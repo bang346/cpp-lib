@@ -18,4 +18,5 @@ target_link_libraries(BusMaster PUBLIC
     Interface::coder_if
     Communication::frame
 )
+
 target_compile_features(BusMaster PUBLIC cxx_std_17)
