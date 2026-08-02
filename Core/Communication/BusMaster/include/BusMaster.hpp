@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <array>
-
+#include <cstring>
 #include "bus_if.hpp"
 #include "crc.hpp"
 #include "archive_defs.hpp"
