@@ -27,38 +27,38 @@
 
 // from: https://stackoverflow.com/questions/9158150/colored-output-in-c/9158263
 
-std::string get_current_time()
-{
-    using namespace std::chrono;
+// std::string get_current_time()
+// {
+//     using namespace std::chrono;
 
-    const auto now = system_clock::now();
-    const std::time_t now_time = system_clock::to_time_t(now);
+//     const auto now = system_clock::now();
+//     const std::time_t now_time = system_clock::to_time_t(now);
 
-    std::tm local_time{};
+//     std::tm local_time{};
 
-    // Windows-sichere Variante von localtime()
-    if (localtime_s(&local_time, &now_time) != 0)
-    {
-        return {};
-    }
+//     // Windows-sichere Variante von localtime()
+//     if (localtime_s(&local_time, &now_time) != 0)
+//     {
+//         return {};
+//     }
 
-    const auto milliseconds =
-        duration_cast<std::chrono::milliseconds>(
-            now.time_since_epoch()) %
-        1000;
+//     const auto milliseconds =
+//         duration_cast<std::chrono::milliseconds>(
+//             now.time_since_epoch()) %
+//         1000;
 
-    char buffer[16]{};
+//     char buffer[16]{};
 
-    std::snprintf(
-        buffer,
-        sizeof(buffer),
-        "%02d:%02d:%02d.%03lld",
-        local_time.tm_hour,
-        local_time.tm_min,
-        local_time.tm_sec,
-        static_cast<long long>(milliseconds.count()));
+//     std::snprintf(
+//         buffer,
+//         sizeof(buffer),
+//         "%02d:%02d:%02d.%03lld",
+//         local_time.tm_hour,
+//         local_time.tm_min,
+//         local_time.tm_sec,
+//         static_cast<long long>(milliseconds.count()));
 
-    return std::string{buffer};
-}
+//     return std::string{buffer};
+// }
 
 #endif
