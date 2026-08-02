@@ -90,6 +90,8 @@ template <typename CrcT, std::size_t buffer_size = frameV1_header::FrameHeadSize
 class frameV1_unpack : public Frame_NS::frame_unpack_if
 {
 private:
+    static constexpr std::size_t crc_size = sizeof(CrcT);
+
     crc_wrapper<CrcT> crc_;
     FrameHead framehead_;
     std::size_t received_;
@@ -168,13 +170,13 @@ public:
 
         // CRC
         CrcT crc = crc_.code(buffer_.data() + 1, buffer_.size() - 1);
-        crc = crc_.update(output, crc, received_ - frameV1_header::FrameHeadSize_ - sizeof(CrcT));
+        crc = crc_.update(output, crc, received_ - frameV1_header::FrameHeadSize_ - crc_size);
         CrcT crcReceived = 0;
 
-        for (size_t i = 0; i < sizeof(CrcT); i++)
+        for (size_t i = 0; i < crc_size; i++)
         {
             crcReceived |=
-                static_cast<CrcT>(output[outputSize - frameV1_header::FrameHeadSize_ - sizeof(CrcT) + i])
+                static_cast<CrcT>(output[outputSize - frameV1_header::FrameHeadSize_ - crc_size + i])
                 << (8U * i);
         }
 
@@ -184,7 +186,7 @@ public:
             return Frame_NS::CommError::CrcMismatch;
         }
         messageid = static_cast<MessageId>(framehead_.messageid);
-        outputSize = received_ - frameV1_header::FrameHeadSize_ - sizeof(CrcT);
+        outputSize = received_ - frameV1_header::FrameHeadSize_ - crc_size;
         auto ret = (received_ >= framehead_.len && input_received < payloadSize) ? Frame_NS::CommError::message_finished_buffer_not_empty
                                                                                  : Frame_NS::CommError::None;
         index_ = (Frame_NS::CommError::message_finished_buffer_not_empty == ret) ? input_received : 0;
@@ -195,6 +197,9 @@ public:
     virtual bool verify() const override { return true; };
 
     virtual std::size_t get_index() const { return index_; }
+
+    virtual std::size_t get_MaxSize() const { return frameV1_header::FrameHeadSize_ + crc_size; }
+
     void reset()
     {
         framehead_.len = 0;

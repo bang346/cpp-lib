@@ -34,7 +34,33 @@ public:
     /// @return     0 = success
     virtual int receive(uint8_t *const data, const uint8_t len) const override
     {
-        return HAL_UART_Receive(huart_, data, len, timeout_);
+        if ((data == nullptr) || (len == 0U))
+        {
+            return -1;
+        }
+
+        std::uint16_t received = 0U;
+
+        const HAL_StatusTypeDef status =
+            HAL_UARTEx_ReceiveToIdle(
+                huart_,
+                data,
+                static_cast<std::uint16_t>(len),
+                &received,
+                timeout_);
+
+        if (status == HAL_OK)
+        {
+            return static_cast<int>(received);
+        }
+
+        // Auch bei einem Timeout können bereits Bytes empfangen worden sein.
+        if ((status == HAL_TIMEOUT) && (received > 0U))
+        {
+            return static_cast<int>(received);
+        }
+
+        return -1;
     }
 
     /// @brief Method prototype to receive and send data

@@ -136,7 +136,8 @@ Eine unbekannte Protokollversion wird erkannt.
         {
             MessageId id;
             std::size_t len = 0;
-            const auto result = receive_raw(id, message_buffer.data(), message_buffer.size(), len, bus_interface, frame);
+            std::size_t expected_len = MessageTraits<Message>::maximumSize + frame.get_MaxSize();
+            const auto result = receive_raw(id, message_buffer.data(), message_buffer.size(), len, bus_interface, frame, expected_len);
 
             if (result == Frame_NS::CommError::message_finished_buffer_not_empty || result == Frame_NS::CommError::None)
             {

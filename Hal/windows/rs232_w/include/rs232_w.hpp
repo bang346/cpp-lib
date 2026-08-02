@@ -84,13 +84,13 @@ public:
             // Timeout, bevor alle angeforderten Bytes empfangen wurden.
             if (bytesRead == 0)
             {
-                return -3;
+                return totalBytesRead;
             }
 
             totalBytesRead += bytesRead;
         }
 
-        return 0;
+        return totalBytesRead;
     }
 
     int transmitreceive(std::uint8_t *const data_tx,
@@ -185,7 +185,7 @@ private:
         timeouts.ReadTotalTimeoutMultiplier = 0;
         timeouts.ReadTotalTimeoutConstant = 100;
         timeouts.WriteTotalTimeoutMultiplier = 0;
-        timeouts.WriteTotalTimeoutConstant = 100;
+        timeouts.WriteTotalTimeoutConstant = 10;
 
         if (SetCommTimeouts(handle_, &timeouts) == FALSE)
         {

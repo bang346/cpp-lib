@@ -92,6 +92,10 @@ namespace Frame_NS
         ///                             read in its entirety and data is therefore still in the buffer
         /// @return                     Index payload
         virtual std::size_t get_index() const = 0;
+
+        /// @brief Method to get the maximum frame size
+        /// @return
+        virtual std::size_t get_MaxSize() const = 0;
     };
 
 } // namespace Frame_NS

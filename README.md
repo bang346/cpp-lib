@@ -102,10 +102,7 @@ cmake --build build --config Debug
 Enable the tests during configuration:
 
 ```bash
-cmake -S . -B build \
-    -DCPPLIB_BUILD_TESTS=ON \
-    -DCPPLIB_TARGET=WINDOWS \
-    -DCMAKE_BUILD_TYPE=Debug
+cmake -S . -B build -DCPPLIB_BUILD_TESTS=ON -DCPPLIB_TARGET=WINDOWS -DCMAKE_BUILD_TYPE=Debug -DCPPLIB_BUILD_HARDWARETESTS=ON
 ```
 
 ```bash

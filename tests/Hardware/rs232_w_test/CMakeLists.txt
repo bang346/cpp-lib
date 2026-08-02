@@ -8,5 +8,6 @@ target_link_libraries(rs232_w_test PRIVATE
     Communication::BusMaster
     Communication::coder
     Communication::frame
+    helper::prittyprinting
 )
 gtest_discover_tests(rs232_w_test)

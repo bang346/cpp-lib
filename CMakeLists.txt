@@ -90,6 +90,12 @@ option(
     OFF
 )
 
+option(
+    CPPLIB_BUILD_HARDWARETESTS
+    "Run Hardware Tests"
+    OFF
+)
+
 if(CPPLIB_BUILD_TESTS)
     if(CPPLIB_TARGET STREQUAL "STM32")
         message(
@@ -123,6 +129,10 @@ if(CPPLIB_BUILD_TESTS)
 
     add_subdirectory(Hal/mock/mock_spi)
     add_subdirectory(Helper)
+
+    if(CPPLIB_BUILD_TESTS)
+        add_subdirectory(tests/Hardware)
+    endif()
 
     add_subdirectory(tests)
 endif()
