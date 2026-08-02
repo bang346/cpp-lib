@@ -9,13 +9,13 @@
 class stm32_uart_blocking : public bus_if
 {
 private:
-    const uint32_t timeout_;
+    const std::uint32_t timeout_;
     UART_HandleTypeDef *huart_;
 
 public:
-    stm32_uart_blocking(const uint32_t &timeout, UART_HandleTypeDef *huart)
+    stm32_uart_blocking(const std::uint32_t &timeout, UART_HandleTypeDef *huart)
         : timeout_{timeout},
-          huart_{huart},
+          huart_{huart}
     {
     }
     virtual ~stm32_uart_blocking() = default;

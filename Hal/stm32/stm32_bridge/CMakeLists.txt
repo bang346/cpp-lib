@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23)
 
-add_library(stm32_bridge STATIC
+add_library(stm32_bridge STATIC EXCLUDE_FROM_ALL
     stm32_bridge.cpp
 )
 

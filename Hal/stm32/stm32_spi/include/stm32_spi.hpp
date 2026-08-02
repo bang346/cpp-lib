@@ -10,12 +10,12 @@
 class stm32_spi : public bus_if
 {
 private:
-    static constexpr uint16_t HW_CS_IN_USE_ = 0xffff;   // Pin will get this value, when HW-CS is used
+    static constexpr uint16_t HW_CS_IN_USE_ = 0xffff; // Pin will get this value, when HW-CS is used
 
-private: 
-    SPI_HandleTypeDef *const hspi_;                     // STM32 HSPI Pointer
-    GPIO_TypeDef *port_;                                // GPIO-Port
-    const uint16_t pin_;                                // GPIO-Pin
+private:
+    SPI_HandleTypeDef *const hspi_; // STM32 HSPI Pointer
+    GPIO_TypeDef *port_;            // GPIO-Port
+    const uint16_t pin_;            // GPIO-Pin
 
 public:
     /// @brief Constructor
