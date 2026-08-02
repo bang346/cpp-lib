@@ -9,6 +9,7 @@ target_link_libraries(test_communication PRIVATE
     Communication::coder
     hal::mock_spi
     Communication::frame
+    hal::mock_spi
 )
 
 gtest_discover_tests(test_communication)

@@ -23,7 +23,14 @@ namespace Frame_NS
         HardwareError,
         Overflow,
         serialize_failed,
-        message_unfinished
+        message_unfinished,
+        message_finished_buffer_not_empty
+    };
+
+    enum class FrameVersion : uint8_t
+    {
+        undefinied,
+        V1
     };
 
     struct frame_pack_if
@@ -52,13 +59,22 @@ namespace Frame_NS
     struct frame_unpack_if
     {
         /// @brief Pure virtual decode method
+        /// @warning                    The inherting class must handle all listed return values!
         /// @param [out] messageid      MessageID used to create the correct message
         /// @param payload              Complete Received bytes
         /// @param [in] payloadSize     Size of the received message
         /// @param output               Buffer for the message (Real message without Frame, CRC)
         /// @param [in] outputCapacity  Size of the buffer
         /// @param [out] outputSize     Size of the message
-        /// @return                     @see CommError
+        /// @return                     None = Message complete buffer empty,
+        ///                             BufferTooSmall = outputCapacity > BinaryReader.size(),
+        ///                             InvalidFrame = Startbyte and/or Version is wrong,
+        ///                             BufferTooSmall = Destination buffer is to small
+        ///                             message_unfinished = inputbuffer was read but the
+        ///                             message is incomplete (used to generate the message with
+        ///                             multiple calls),
+        ///                             CrcMismatch = Checksum received and calculated are different
+        ///                             message_finished_buffer_not_empty
         virtual CommError decode(MessageId &messageid,
                                  const std::uint8_t *payload,
                                  const std::size_t &payloadSize,
@@ -70,6 +86,12 @@ namespace Frame_NS
         /// @return                 true = success,
         ///                         false = error
         virtual bool verify() const = 0;
+
+        /// @brief Method for obtaining the payload
+        ///                             index when the payload has not been
+        ///                             read in its entirety and data is therefore still in the buffer
+        /// @return                     Index payload
+        virtual std::size_t get_index() const = 0;
     };
 
 } // namespace Frame_NS

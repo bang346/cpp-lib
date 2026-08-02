@@ -95,6 +95,7 @@ private:
     std::size_t received_;
     bool head_received_;
     std::array<std::uint8_t, buffer_size> buffer_;
+    std::size_t index_;
 
 public:
     explicit frameV1_unpack(crc_wrapper<CrcT> crc)
@@ -102,7 +103,8 @@ public:
           framehead_{},
           received_{},
           head_received_{false},
-          buffer_{}
+          buffer_{},
+          index_{}
     {
     }
     virtual ~frameV1_unpack() = default;
@@ -183,12 +185,16 @@ public:
         }
         messageid = static_cast<MessageId>(framehead_.messageid);
         outputSize = received_ - frameV1_header::FrameHeadSize_ - sizeof(CrcT);
+        auto ret = (received_ >= framehead_.len && input_received < payloadSize) ? Frame_NS::CommError::message_finished_buffer_not_empty
+                                                                                 : Frame_NS::CommError::None;
+        index_ = (Frame_NS::CommError::message_finished_buffer_not_empty == ret) ? input_received : 0;
         reset();
-        return Frame_NS::CommError::None;
+        return ret;
     }
 
     virtual bool verify() const override { return true; };
 
+    virtual std::size_t get_index() const { return index_; }
     void reset()
     {
         framehead_.len = 0;

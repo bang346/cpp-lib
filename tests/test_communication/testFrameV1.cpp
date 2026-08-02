@@ -458,3 +458,33 @@ TEST_F(FrameV1DecodeTest, RecoversAfterCrcError)
             outputSize),
         Frame_NS::CommError::None);
 }
+
+TEST_F(FrameV1DecodeTest, DetectsRemainingInputData)
+{
+    frameV1_unpack decoder(coder_);
+
+    MessageId id{};
+    std::array<std::uint8_t, 100> output{};
+    std::size_t outputSize{};
+
+    auto frameWithExtraByte = frame_;
+
+    ASSERT_LT(frameSize_, frameWithExtraByte.size());
+
+    // Zusätzliches Byte hinter dem vollständigen Frame
+    frameWithExtraByte[frameSize_] = 0xAA;
+
+    const std::size_t receivedSize = frameSize_ + 1;
+
+    const auto result = decoder.decode(
+        id,
+        frameWithExtraByte.data(),
+        receivedSize,
+        output.data(),
+        output.size(),
+        outputSize);
+
+    EXPECT_EQ(
+        result,
+        Frame_NS::CommError::message_finished_buffer_not_empty);
+}

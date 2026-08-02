@@ -10,50 +10,198 @@
 #include "archive_generic.hpp"
 #include "archive_example.hpp"
 #include "frameV1.hpp"
+#include "mock_spi.hpp"
 
 using ::testing::_;
 using ::testing::Invoke;
 
-TEST(Communication, Serialize)
+TEST(Communication, BasciSendReceive)
 {
-    // std::array<std::uint8_t, 5> payload{
-    //     0xDC, 0x05,
-    //     0x40, 0x01,
-    //     0x02};
+    std::vector<std::uint8_t> data_tx_received;
+    // CRC16
+    crc_wrapper<std::uint16_t> coder(0xFFFFu, 0x1021u);
 
-    // BusMaster_NS::Frame Frame =
-    //     {
-    //         {0xF7,
-    //          MessageId::ConfigureGeneric,
-    //          0,
-    //          static_cast<std::uint16_t>(payload.size())},
-    //         payload.data()};
+    // Init Frame
+    frameV1_pack frame_pack(coder);
+    frameV1_unpack frame_unpack(coder);
+    // Mock for test (SPI mock is the same for uart)
+    mock_spi mock;
 
-    // const uint16_t crc16 = crc_compute<uint16_t>(
-    //     payload.data(),
-    //     payload.size(),
-    //     0xFFFFu,
-    //     0x1021u,
-    //     CrcBitOrder::MsbFirst,
-    //     0x0000u);
+    EXPECT_CALL(mock, transmit(_, _))
+        .WillOnce(Invoke([&data_tx_received](const uint8_t *const data, const uint8_t len) -> int
+                         {
+                            EXPECT_NE(data, nullptr);
+                            EXPECT_GT(len, 0);
+                            data_tx_received.assign(data, data + len);
 
-    // std::array<uint8_t, 64> buffer{};
-    // uint32_t value = 0xFAFBFCFD;
-    // using UnsignedT = typename std::make_unsigned<uint32_t>::type;
+                            EXPECT_EQ(data_tx_received.size(), len);
+                            EXPECT_EQ(data_tx_received[0], data[0]);
+                            return 0; }));
 
-    // const UnsignedT raw =
-    //     static_cast<UnsignedT>(value);
+    EXPECT_CALL(mock, receive(_, _))
+        .WillOnce(Invoke([&data_tx_received](uint8_t *const data, const uint8_t len) -> int
+                         {
+                            for (size_t i = 0; i < data_tx_received.size(); i++)
+                            {
+                                data[i] = data_tx_received[i];
+                            }
+                            
+                        return data_tx_received.size(); }));
 
-    // auto x = sizeof(uint32_t);
-    // // Little Endian
-    // for (std::size_t i = 0; i < sizeof(uint32_t); ++i)
-    // {
-    //     buffer[i] =
-    //         static_cast<std::uint8_t>(
-    //             (raw >> (8U * i)) & 0xFFU);
-    // }
+    // Transmit Part
+    ConfigureGeneric<12> command{
+        0xfA,
+        {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
+    BusMaster_NS::BusMasterTransmit<32> DUT1;
+    BusMaster_NS::BusMasterReceive<32> DUT2;
 
-    // int beta = 0;
+    ConfigureGeneric<12> command_rx{};
+    auto result = DUT1.transmit(command, &mock, frame_pack);
+    ASSERT_EQ(result, Frame_NS::CommError::None);
+
+    // Receive Part
+    MessageId id;
+
+    std::array<uint8_t, 32> receive_buffer{};
+    std::size_t len = 0;
+    result = DUT2.receive_raw(id, receive_buffer.data(), receive_buffer.size(), len, &mock, frame_unpack);
+
+    ASSERT_EQ(result, Frame_NS::CommError::None);
+    if (MessageTraits<ConfigureGeneric<12>>::id == id)
+    {
+        BinaryReader reader(receive_buffer.data(), receive_buffer.size());
+        command_rx.serialize(reader);
+    }
+}
+
+TEST(Communication, ReceiveMessage)
+{
+    std::vector<std::uint8_t> data_tx_received;
+    // CRC16
+    crc_wrapper<std::uint16_t> coder(0xFFFFu, 0x1021u);
+
+    // Init Frame
+    frameV1_pack frame_pack(coder);
+    frameV1_unpack frame_unpack(coder);
+    // Mock for test (SPI mock is the same for uart)
+    mock_spi mock;
+
+    EXPECT_CALL(mock, transmit(_, _))
+        .WillOnce(Invoke([&data_tx_received](const uint8_t *const data, const uint8_t len) -> int
+                         {
+                            EXPECT_NE(data, nullptr);
+                            EXPECT_GT(len, 0);
+                            data_tx_received.assign(data, data + len);
+
+                            EXPECT_EQ(data_tx_received.size(), len);
+                            EXPECT_EQ(data_tx_received[0], data[0]);
+                            return 0; }));
+
+    EXPECT_CALL(mock, receive(_, _))
+        .WillRepeatedly(Invoke([&data_tx_received](uint8_t *const data, const uint8_t len) -> int
+                               {
+                            for (size_t i = 0; i < data_tx_received.size(); i++)
+                            {
+                                data[i] = data_tx_received[i];
+                            }
+                            
+                        return data_tx_received.size(); }));
+
+    // Transmit Part
+    ConfigureGeneric<12> command{
+        0xfA,
+        {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
+    BusMaster_NS::BusMasterTransmit<32> DUT1;
+    BusMaster_NS::BusMasterReceive<32> DUT2;
+
+    ConfigureGeneric<12> command_rx{};
+    auto result = DUT1.transmit(command, &mock, frame_pack);
+    ASSERT_EQ(result, Frame_NS::CommError::None);
+
+    // Receive Part
+    MessageId id;
+
+    std::array<uint8_t, 32> receive_buffer{};
+    std::size_t len = 0;
+    result = DUT2.receive_message(command_rx, &mock, frame_unpack);
+    ASSERT_EQ(result, Frame_NS::CommError::None);
+
+    ConfigureGeneric<11> command_rx_error{};
+    MotorCommand command_rx_error2;
+    result = DUT2.receive_message(command_rx_error, &mock, frame_unpack);
+    ASSERT_EQ(result, Frame_NS::CommError::serialize_failed);
+    result = DUT2.receive_message(command_rx_error2, &mock, frame_unpack);
+    ASSERT_EQ(result, Frame_NS::CommError::serialize_failed);
+}
+
+TEST(Communication, ReceiveMessagePartialy)
+{
+    std::vector<std::uint8_t> data_tx_received;
+    // CRC16
+    crc_wrapper<std::uint16_t> coder(0xFFFFu, 0x1021u);
+    std::vector<std::size_t> sizes{20, 3, 2, 4, 3, 10};
+    std::size_t index = 0;
+    // Init Frame
+    frameV1_pack frame_pack(coder);
+    frameV1_unpack frame_unpack(coder);
+    // Mock for test (SPI mock is the same for uart)
+    mock_spi mock;
+
+    EXPECT_CALL(mock, transmit(_, _))
+        .WillOnce(Invoke([&data_tx_received](const uint8_t *const data, const uint8_t len) -> int
+                         {
+                            EXPECT_NE(data, nullptr);
+                            EXPECT_GT(len, 0);
+                            data_tx_received.assign(data, data + len);
+
+                            EXPECT_EQ(data_tx_received.size(), len);
+                            EXPECT_EQ(data_tx_received[0], data[0]);
+                            return 0; }));
+
+    EXPECT_CALL(mock, receive(_, _))
+        .WillRepeatedly(Invoke([&](uint8_t *const data, const uint8_t len) -> int
+                               {
+                                if(sizes.size() == 0)
+                                {
+                                    return 0;
+                                }
+                                auto thissize = sizes.back();
+                                
+                                sizes.pop_back();
+                                for (size_t i = 0; i < thissize; i++)
+                                {
+                                    data[i] = data_tx_received[i+index];
+                                }
+                                index += thissize;
+                            
+                        return thissize; }));
+
+    // Transmit Part
+    ConfigureGeneric<12> command{
+        0xfA,
+        {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
+    BusMaster_NS::BusMasterTransmit<32> DUT1;
+    BusMaster_NS::BusMasterReceive<32> DUT2;
+
+    ConfigureGeneric<12> command_rx{};
+    auto result = DUT1.transmit(command, &mock, frame_pack);
+    ASSERT_EQ(result, Frame_NS::CommError::None);
+
+    data_tx_received.insert(data_tx_received.end(), data_tx_received.begin(), data_tx_received.begin() + 21);
+
+    // Receive Part
+    result = Frame_NS::CommError::message_unfinished;
+
+    while (result != Frame_NS::CommError::None)
+    {
+        result = DUT2.receive_message(command_rx, &mock, frame_unpack);
+        if (result == Frame_NS::CommError::message_finished_buffer_not_empty)
+        {
+            int i = 0;
+        }
+    }
+
+    ASSERT_EQ(result, Frame_NS::CommError::None);
 }
 
 TEST(Communication, CoderCrC)
