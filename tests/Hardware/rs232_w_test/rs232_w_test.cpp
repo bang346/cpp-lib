@@ -44,7 +44,7 @@ TEST(RS232, Receive)
         {
             counter++;
 
-            std::cout << GREEN << "time " << get_current_time() << " Command: " << (int)message.command << "\n";
+            std::cout << GREEN << " Command: " << (int)message.command << "\n";
             for (size_t i = 0; i < 12; i++)
             {
                 std::cout << "byte[" << i << "]: " << (int)message.Payload[i] << " | ";
@@ -88,7 +88,7 @@ TEST(RS232, TransmitReceive)
             }
         }
 
-        std::cout << GREEN << "time " << get_current_time() << " Command: " << (int)message.command << "\n";
+        std::cout << GREEN << " Command: " << (int)message.command << "\n";
         for (size_t i = 0; i < 12; i++)
         {
             std::cout << "byte[" << i << "]: " << (int)message.Payload[i] << " | ";
