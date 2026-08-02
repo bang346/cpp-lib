@@ -130,7 +130,7 @@ if(CPPLIB_BUILD_TESTS)
     add_subdirectory(Hal/mock/mock_spi)
     add_subdirectory(Helper)
 
-    if(CPPLIB_BUILD_TESTS)
+    if(CPPLIB_BUILD_HARDWARETESTS)
         add_subdirectory(tests/Hardware)
     endif()
 
