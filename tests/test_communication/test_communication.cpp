@@ -2,6 +2,7 @@
 #include <iostream>
 #include <array>
 #include <type_traits>
+#include <deque>
 
 #include "BusMaster.hpp"
 #include "crc.hpp"
@@ -11,6 +12,7 @@
 #include "archive_example.hpp"
 #include "frameV1.hpp"
 #include "mock_spi.hpp"
+#include "archive_pwm.hpp"
 
 using ::testing::_;
 using ::testing::Invoke;
@@ -204,25 +206,166 @@ TEST(Communication, ReceiveMessagePartialy)
     ASSERT_EQ(result, Frame_NS::CommError::None);
 }
 
-TEST(Communication, CoderCrC)
+TEST(Communication, BusMasterMessage)
 {
-    // std::array<std::uint8_t, 5> result_array;
-    // std::array<std::uint8_t, 5> payload{
-    //     0xDC, 0x05,
-    //     0x40, 0x01,
-    //     0x02};
+    std::array<uint8_t, 100> buffer{};
+    crc_wrapper<std::uint16_t> coder(0xFFFFu, 0x1021u);
+    frameV1_pack frame_pack(coder);
+    frameV1_unpack frame_unpack(coder);
 
-    // coder_crc<std::uint16_t> coder(0xFFFFu, 0x1021u);
+    mock_spi mock;
 
-    // uint8_t data[30] = {};
-    // uint8_t result[30] = {};
-    // auto len = coder.code(payload.data(), payload.size(), data);
-    // int x = 0;
-    // auto newlen = coder.decode(data, len, result_array.data());
+    std::deque<std::uint8_t> data_tx_rx;
+    EXPECT_CALL(mock, transmit(_, _))
+        .WillRepeatedly(Invoke([&](const uint8_t *const data, const uint8_t len) -> int
+                               {
+                            EXPECT_NE(data, nullptr);
+                            EXPECT_GT(len, 0);
+                            for (size_t i = 0; i < len; i++)
+                            {
+                                data_tx_rx.push_back(data[i]);
+                            }
+                            return 0; }));
 
-    // ASSERT_EQ(result_array, payload);
-    // ASSERT_TRUE(coder.decode_result());
-    // int z = 0;
+    EXPECT_CALL(mock, receive(_, _))
+        .WillRepeatedly(Invoke([&](uint8_t *const data, const uint8_t len) -> int
+                               {
+                                int ret = data_tx_rx.size();
+
+                                for (size_t i = 0; i < ret; i++)
+                                {
+                                    data[i] = data_tx_rx.front();
+                                    data_tx_rx.pop_front();
+                                    
+                                }
+                                
+                            
+                        return ret; }));
+
+    BusMaster_NS::BusMasterTransmit<100> DUT1;
+    BusMaster_NS::BusMasterReceive<100> DUT2;
+
+    ConfigurePWMs PWMs;
+    PWMs.ch1 = (uint8_t)PWM_Command::start;
+    PWMs.ch2 = (uint8_t)PWM_Command::stopp;
+    PWMs.ch3 = (uint8_t)PWM_Command::overwritestart;
+    PWMs.periode = 0xff00;
+    PWMs.Pulse1 = 0xf0f0;
+    PWMs.Pulse2 = 0xf0f1;
+    PWMs.Pulse3 = 0xf0f3;
+
+    ConfigureGeneric<12> command{
+        0xfA,
+        {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
+
+    DUT1.transmit(PWMs, &mock, frame_pack);
+    DUT1.transmit(command, &mock, frame_pack);
+
+    // Receive Part
+    ConfigurePWMs PWMs_received{};
+    ConfigureGeneric<12> configuregeneric{};
+    MessageId id;
+    std::size_t size = 0;
+    Frame_NS::CommError result;
+    do
+    {
+        result = DUT2.receive_raw(id, buffer.data(), buffer.size(), size, &mock, frame_unpack);
+        if (id == MessageTraits<ConfigurePWMs>::id)
+        {
+            BinaryReader reader(buffer.data(), buffer.size());
+            PWMs_received.serialize(reader);
+            for (size_t i = 0; i < sizeof(PWMs_received); i++)
+            {
+                EXPECT_EQ(PWMs_received.ch1, PWMs.ch1);
+                EXPECT_EQ(PWMs_received.ch2, PWMs.ch2);
+                EXPECT_EQ(PWMs_received.ch3, PWMs.ch3);
+                EXPECT_EQ(PWMs_received.periode, PWMs.periode);
+                EXPECT_EQ(PWMs_received.Pulse1, PWMs.Pulse1);
+                EXPECT_EQ(PWMs_received.Pulse2, PWMs.Pulse2);
+                EXPECT_EQ(PWMs_received.Pulse3, PWMs.Pulse3);
+            }
+        }
+        else if (id == MessageTraits<ConfigureGeneric<12>>::id)
+        {
+            BinaryReader reader(buffer.data(), buffer.size());
+            configuregeneric.serialize(reader);
+            EXPECT_EQ(configuregeneric.command, command.command);
+            for (size_t i = 0; i < sizeof(configuregeneric.Payload); i++)
+            {
+                EXPECT_EQ(configuregeneric.Payload[i], command.Payload[i]);
+            }
+        }
+    } while (result == Frame_NS::CommError::message_finished_buffer_not_empty);
+}
+
+TEST(Communication, Check)
+{
+    std::array<uint8_t, 100> buffer{};
+    crc_wrapper<std::uint16_t> coder(0xFFFFu, 0x1021u);
+    frameV1_pack frame_pack(coder);
+    frameV1_unpack frame_unpack(coder);
+
+    mock_spi mock;
+
+    std::deque<std::uint8_t> data_tx_rx;
+    EXPECT_CALL(mock, transmit(_, _))
+        .WillRepeatedly(Invoke([&](const uint8_t *const data, const uint8_t len) -> int
+                               {
+                            EXPECT_NE(data, nullptr);
+                            EXPECT_GT(len, 0);
+                            for (size_t i = 0; i < len; i++)
+                            {
+                                data_tx_rx.push_back(data[i]);
+                            }
+                            return 0; }));
+
+    EXPECT_CALL(mock, receive(_, _))
+        .WillRepeatedly(Invoke([&](uint8_t *const data, const uint8_t len) -> int
+                               {
+                                int ret = data_tx_rx.size();
+
+                                for (size_t i = 0; i < ret; i++)
+                                {
+                                    data[i] = data_tx_rx.front();
+                                    data_tx_rx.pop_front();
+                                    
+                                }
+                                
+                            
+                        return ret; }));
+
+    BusMaster_NS::BusMasterTransmit<100> DUT1;
+    BusMaster_NS::BusMasterReceive<100> DUT2;
+
+    ConfigurePWMs PWMs;
+    PWMs.ch1 = (uint8_t)PWM_Command::start;
+    PWMs.ch2 = (uint8_t)PWM_Command::stopp;
+    PWMs.ch3 = (uint8_t)PWM_Command::overwritestart;
+    PWMs.periode = 0xff00;
+    PWMs.Pulse1 = 0xf0f0;
+    PWMs.Pulse2 = 0xf0f1;
+    PWMs.Pulse3 = 0xf0f3;
+
+    ConfigureGeneric<12> command{
+        0xfA,
+        {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
+
+    DUT1.transmit(PWMs, &mock, frame_pack);
+    DUT1.transmit(command, &mock, frame_pack);
+
+    // Receive Part
+    ConfigurePWMs PWMs_received{};
+    ConfigureGeneric<12> configuregeneric{};
+    MessageId id;
+    std::size_t size = 0;
+    Frame_NS::CommError result = DUT2.receive_raw(id, buffer.data(), buffer.size(), size, &mock, frame_unpack);
+
+    if (result == Frame_NS::CommError::message_finished_buffer_not_empty)
+    {
+        result = DUT2.check(id, buffer.data(), buffer.size(), size, frame_unpack);
+        int i = 0;
+        EXPECT_EQ(result, Frame_NS::CommError::None);
+    }
 }
 
 // TEST(Communication, Transmit)

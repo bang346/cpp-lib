@@ -15,6 +15,11 @@
 #include "frame.hpp"
 #include "frameV1.hpp"
 
+/*
+
+Version V0.1
+*/
+
 namespace BusMaster_NS
 {
     /*
@@ -129,7 +134,7 @@ Eine unbekannte Protokollversion wird erkannt.
         /// @tparam Message             Message-template
         /// @param message              Message obj
         /// @param bus_interface        Bus interface (uart)
-        /// @param frame                Frame Version format
+        /// @param [inout] frame        Frame Version format
         /// @return                     @see Frame_NS::CommError
         template <typename Message>
         Frame_NS::CommError receive_message(Message &message,
@@ -165,7 +170,7 @@ Eine unbekannte Protokollversion wird erkannt.
         /// @param [in] outputCapacity  Size of the array
         /// @param [out] outputSize     Received size
         /// @param bus_interface        Bus interface (uart)
-        /// @param frame                Frame Version format
+        /// @param [inout] frame        Frame Version format
         /// @param [in] expected_len    How many bytes to read (important for linux systems)
         /// @return                     @see Frame_NS::CommError
         Frame_NS::CommError receive_raw(MessageId &id,
@@ -193,14 +198,10 @@ Eine unbekannte Protokollversion wird erkannt.
             }
             // Receive data
 
-            // const auto start = std::chrono::steady_clock::now();
-
             const int receivedLength = bus_interface->receive(
                 frame_buffer.data() + index_,
                 actual_len);
-            // const auto end = std::chrono::steady_clock::now();
-            // auto duration_ms = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-            // std::cout << "Zeit: " << duration_ms.count() << " us\n";
+
             if (receivedLength < 0)
             {
                 index_ = 0;
@@ -208,14 +209,82 @@ Eine unbekannte Protokollversion wird erkannt.
                 return CommError::HardwareError;
             }
 
-            if (receivedLength == 0)
+            if (receivedLength == 0 && index_ == 0)
             {
                 return CommError::InvalidLength;
             }
 
+            return check(id, output, outputCapacity, outputSize, frame, receivedLength);
+        }
+
+        /// @brief Method to get the Paylaod
+        /// @warning                    Currently supports only FrameV1!
+        /// @note                       Use this method, when the message and
+        ///                             and length is unknown
+        /// @param [out] id             Messageid
+        /// @param [out] output         Output destination array
+        /// @param [in] outputCapacity  Size of the array
+        /// @param [out] outputSize     Received size
+        /// @param bus_interface        Bus interface (uart)
+        /// @param [inout] frame        Frame Version format
+        /// @return                     @see Frame_NS::CommError
+        Frame_NS::CommError receive_raw(MessageId &id,
+                                        std::uint8_t *output,
+                                        const std::int16_t &outputCapacity,
+                                        std::size_t &outputSize,
+                                        const bus_if *bus_interface,
+                                        Frame_NS::frame_unpack_if &frame)
+        {
+            return receive_raw(id, output, outputCapacity, outputSize, bus_interface, frame, frame_buffer.size());
+        }
+
+        void reset()
+        {
+            VersionChecked_ = false;
+            FrameVersionIdentified_ = Frame_NS::FrameVersion::undefinied;
+        }
+
+        /// @brief Method to check the remaining bytes from a message
+        /// @note                       Use this message when a complete
+        ///                             message is expected to be inside
+        ///                             the framebuffer
+        /// @param [out] id             Messageid
+        /// @param [out] output         Output destination array
+        /// @param [in] outputCapacity  Size of the array
+        /// @param [out] outputSize     Received size
+        /// @param bus_interface        Bus interface (uart)
+        /// @param [inout] frame        Frame Version format
+        /// @return                     @see Frame_NS::CommError
+        virtual Frame_NS::CommError check(MessageId &id,
+                                          std::uint8_t *output,
+                                          const std::int16_t &outputCapacity,
+                                          std::size_t &outputSize,
+                                          Frame_NS::frame_unpack_if &frame)
+        {
+            return check(id, output, outputCapacity, outputSize, frame, 0);
+        }
+
+    private:
+        /// @brief Method to check the remaining bytes from a message
+        /// @note                       Internally used to check the new message
+        ///                             (and the remaining bytes inside the buffer)
+        /// @param [out] id             Messageid
+        /// @param [out] output         Output destination array
+        /// @param [in] outputCapacity  Size of the array
+        /// @param [out] outputSize     Received size
+        /// @param bus_interface        Bus interface (uart)
+        /// @param [inout] frame        Frame Version format
+        /// @return                     @see Frame_NS::CommError
+        virtual Frame_NS::CommError check(MessageId &id,
+                                          std::uint8_t *output,
+                                          const std::int16_t &outputCapacity,
+                                          std::size_t &outputSize,
+                                          Frame_NS::frame_unpack_if &frame,
+                                          const int &receivedLength)
+        {
+            using namespace Frame_NS;
             const std::size_t totalSize =
                 index_ + static_cast<std::size_t>(receivedLength);
-
             const CommError decodeResult = frame.decode(
                 id,
                 frame_buffer.data(),
@@ -268,32 +337,6 @@ Eine unbekannte Protokollversion wird erkannt.
                 reset();
                 return decodeResult;
             }
-        }
-
-        /// @brief Method to get the Paylaod
-        /// @note                       Use this method, when the message and
-        ///                             length is unknown
-        /// @param id                   Messageid
-        /// @param output               Output destination array
-        /// @param outputCapacity       size of the array
-        /// @param outputSize           Received size
-        /// @param bus_interface        Bus interface (uart)
-        /// @param frame                Frame Version format
-        /// @return                     @see Frame_NS::CommError
-        Frame_NS::CommError receive_raw(MessageId &id,
-                                        std::uint8_t *output,
-                                        const std::int16_t &outputCapacity,
-                                        std::size_t &outputSize,
-                                        const bus_if *bus_interface,
-                                        Frame_NS::frame_unpack_if &frame)
-        {
-            return receive_raw(id, output, outputCapacity, outputSize, bus_interface, frame, frame_buffer.size());
-        }
-
-        void reset()
-        {
-            VersionChecked_ = false;
-            FrameVersionIdentified_ = Frame_NS::FrameVersion::undefinied;
         }
     };
 
