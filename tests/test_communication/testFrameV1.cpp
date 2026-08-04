@@ -488,3 +488,60 @@ TEST_F(FrameV1DecodeTest, DetectsRemainingInputData)
         result,
         Frame_NS::CommError::message_finished_buffer_not_empty);
 }
+
+TEST_F(FrameV1DecodeTest, DetectsStart)
+{
+    frameV1_unpack decoder(coder_);
+
+    MessageId id{};
+    std::array<std::uint8_t, 100> output{};
+    std::array<std::uint8_t, 100> frameWithExtraByte{};
+    std::size_t outputSize{};
+
+    constexpr std::size_t offset = 6;
+    frameSize_ += offset;
+    for (size_t i = offset; i < frameSize_; i++)
+    {
+        frameWithExtraByte[i] = frame_[i - offset];
+    }
+
+    ASSERT_LT(frameSize_, frameWithExtraByte.size());
+
+    const std::size_t receivedSize = frameSize_;
+
+    const auto result = decoder.decode(
+        id,
+        frameWithExtraByte.data(),
+        receivedSize,
+        output.data(),
+        output.size(),
+        outputSize);
+
+    EXPECT_EQ(
+        result,
+        Frame_NS::CommError::None);
+}
+
+TEST_F(FrameV1DecodeTest, DetectsNoStartByte)
+{
+    frameV1_unpack decoder(coder_);
+
+    MessageId id{};
+    std::array<std::uint8_t, 100> output{};
+    std::array<std::uint8_t, 100> frameNoSTartByte{};
+    std::size_t outputSize{};
+
+    const std::size_t receivedSize = frameSize_;
+
+    const auto result = decoder.decode(
+        id,
+        frameNoSTartByte.data(),
+        receivedSize,
+        output.data(),
+        output.size(),
+        outputSize);
+
+    EXPECT_EQ(
+        result,
+        Frame_NS::CommError::InvalidFrame);
+}

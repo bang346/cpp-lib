@@ -122,7 +122,11 @@ public:
         std::size_t input_received = 0;
         while (!head_received_ && received_ < frameV1_header::FrameHeadSize_ && input_received < payloadSize)
         {
-            buffer_[received_++] = payload[input_received++];
+            buffer_[received_] = payload[input_received++];
+            if (buffer_[0] == frameV1_header::startbyte)
+            {
+                received_++;
+            }
             if (received_ > buffer_size)
             {
                 reset();
@@ -153,15 +157,13 @@ public:
 
         if (!head_received_)
         {
-            return Frame_NS::CommError::message_unfinished;
+            return (received_ > 0) ? Frame_NS::CommError::message_unfinished : Frame_NS::CommError::InvalidFrame;
         }
 
         while (input_received < payloadSize && received_ < framehead_.len)
         {
             output[received_++ - frameV1_header::FrameHeadSize_] = payload[input_received++];
         }
-
-        outputSize = received_;
 
         if (received_ < framehead_.len)
         {
@@ -176,7 +178,7 @@ public:
         for (size_t i = 0; i < crc_size; i++)
         {
             crcReceived |=
-                static_cast<CrcT>(output[outputSize - frameV1_header::FrameHeadSize_ - crc_size + i])
+                static_cast<CrcT>(output[received_ - frameV1_header::FrameHeadSize_ - crc_size + i])
                 << (8U * i);
         }
 
@@ -186,10 +188,10 @@ public:
             return Frame_NS::CommError::CrcMismatch;
         }
         messageid = static_cast<MessageId>(framehead_.messageid);
-        outputSize = received_ - frameV1_header::FrameHeadSize_ - crc_size;
         auto ret = (received_ >= framehead_.len && input_received < payloadSize) ? Frame_NS::CommError::message_finished_buffer_not_empty
                                                                                  : Frame_NS::CommError::None;
         index_ = (Frame_NS::CommError::message_finished_buffer_not_empty == ret) ? input_received : 0;
+        outputSize = received_ - frameV1_header::FrameHeadSize_ - crc_size;
         reset();
         return ret;
     }

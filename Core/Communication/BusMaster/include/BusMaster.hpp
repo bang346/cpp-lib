@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <array>
 #include <cstring>
+#include <chrono>
+#include <iostream>
 
 #include "bus_if.hpp"
 #include "crc.hpp"
@@ -190,10 +192,15 @@ Eine unbekannte Protokollversion wird erkannt.
                 actual_len = freeCapacity;
             }
             // Receive data
+
+            // const auto start = std::chrono::steady_clock::now();
+
             const int receivedLength = bus_interface->receive(
                 frame_buffer.data() + index_,
                 actual_len);
-
+            // const auto end = std::chrono::steady_clock::now();
+            // auto duration_ms = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+            // std::cout << "Zeit: " << duration_ms.count() << " us\n";
             if (receivedLength < 0)
             {
                 index_ = 0;

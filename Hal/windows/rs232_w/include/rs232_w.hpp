@@ -8,6 +8,9 @@
 
 #include "bus_if.hpp"
 
+/// @brief
+/// @note       Optimized for high data rates. If the data
+///             rate is low, check the latency in the FTDI chip.
 class windows_uart final : public bus_if
 {
 public:
@@ -181,9 +184,9 @@ private:
         COMMTIMEOUTS timeouts{};
 
         // ReadFile wartet maximal ungefähr 100 ms pro Aufruf.
-        timeouts.ReadIntervalTimeout = 20;
-        timeouts.ReadTotalTimeoutMultiplier = 0;
-        timeouts.ReadTotalTimeoutConstant = 100;
+        timeouts.ReadIntervalTimeout = MAXDWORD;
+        timeouts.ReadTotalTimeoutMultiplier = MAXDWORD;
+        timeouts.ReadTotalTimeoutConstant = 2;
         timeouts.WriteTotalTimeoutMultiplier = 0;
         timeouts.WriteTotalTimeoutConstant = 10;
 
