@@ -15,6 +15,7 @@
 #include "frame.hpp"
 #include "frameV1.hpp"
 
+#include "etl/vector.h"
 /*
 
 Version V0.1
@@ -69,12 +70,12 @@ Eine unbekannte Protokollversion wird erkannt.
     class BusMasterTransmit
     {
     private:
-        std::array<uint8_t, size> message_buffer;
+        std::array<uint8_t, size> message_buffer_;
         std::array<uint8_t, size> frame_buffer;
 
     public:
         BusMasterTransmit(/* args */)
-            : message_buffer{},
+            : message_buffer_{},
               frame_buffer{}
         {
         }
@@ -86,13 +87,13 @@ Eine unbekannte Protokollversion wird erkannt.
 
             std::size_t len = 0;
             BinaryWriter writer(
-                message_buffer.data(),
-                message_buffer.size());
+                message_buffer_.data(),
+                message_buffer_.size());
 
             message.serialize(writer);
 
             const Frame_NS::CommError encodeResult = frame.encode(MessageTraits<Message>::id,
-                                                                  message_buffer.data(),
+                                                                  message_buffer_.data(),
                                                                   writer.size(),
                                                                   frame_buffer.data(),
                                                                   frame_buffer.size(),
@@ -110,19 +111,20 @@ Eine unbekannte Protokollversion wird erkannt.
     /// @brief BusMaster Receive Class
     /// @tparam size    Internal storage size
     template <std::size_t size>
-    class BusMasterReceive
+    class BusMasterReceive final
     {
     private:
-        std::array<uint8_t, size> frame_buffer;
-        std::array<uint8_t, size> message_buffer;
+        // std::array<uint8_t, size> frame_buffer;
+        std::array<uint8_t, size> message_buffer_;
+        etl::vector<std::uint8_t, 100> frame_buffer_;
         Frame_NS::FrameVersion FrameVersionIdentified_;
         bool VersionChecked_;
         std::size_t index_;
 
     public:
         BusMasterReceive(/* args */)
-            : frame_buffer{},
-              message_buffer{},
+            : message_buffer_{},
+              frame_buffer_{},
               FrameVersionIdentified_{Frame_NS::FrameVersion::undefinied},
               VersionChecked_{false},
               index_{0}
@@ -144,13 +146,13 @@ Eine unbekannte Protokollversion wird erkannt.
             MessageId id;
             std::size_t len = 0;
             std::size_t expected_len = MessageTraits<Message>::maximumSize + frame.get_MaxSize();
-            const auto result = receive_raw(id, message_buffer.data(), message_buffer.size(), len, bus_interface, frame, expected_len);
+            const auto result = receive_raw(id, message_buffer_.data(), message_buffer_.size(), len, bus_interface, frame, expected_len);
 
             if (result == Frame_NS::CommError::message_finished_buffer_not_empty || result == Frame_NS::CommError::None)
             {
                 if (MessageTraits<Message>::maximumSize == len && MessageTraits<Message>::id == id)
                 {
-                    BinaryReader reader(message_buffer.data(), message_buffer.size());
+                    BinaryReader reader(message_buffer_.data(), message_buffer_.size());
                     message.serialize(reader);
                 }
                 else
@@ -182,39 +184,56 @@ Eine unbekannte Protokollversion wird erkannt.
                                         const std::size_t &expected_len)
         {
             using namespace Frame_NS;
-            const std::size_t freeCapacity =  // When the last message was completed but the buffer wasnt empty
-                frame_buffer.size() - index_; // the old data is written to the beginning of frame_buffer
 
-            if (freeCapacity == 0)
-            {
-                index_ = 0;
-                reset();
-                return CommError::ClassInternalBufferTooSmall;
-            }
-            std::size_t actual_len = expected_len;
-            if (expected_len > freeCapacity)
-            {
-                actual_len = freeCapacity;
-            }
-            // Receive data
-
-            const int receivedLength = bus_interface->receive(
-                frame_buffer.data() + index_,
-                actual_len);
-
-            if (receivedLength < 0)
-            {
-                index_ = 0;
-                reset();
-                return CommError::HardwareError;
-            }
-
-            if (receivedLength == 0 && index_ == 0)
+            if ((bus_interface == nullptr) || (output == nullptr) ||
+                (outputCapacity <= 0) || (expected_len == 0U))
             {
                 return CommError::InvalidLength;
             }
 
-            return check(id, output, outputCapacity, outputSize, frame, receivedLength);
+            if (frame_buffer_.available() == 0)
+            {
+                frame_buffer_.clear();
+                reset();
+                return CommError::ClassInternalBufferTooSmall;
+            }
+            const std::size_t receive_capacity =
+                std::min(expected_len, frame_buffer_.available());
+
+            const std::size_t old_size = frame_buffer_.size();
+            // Receive data
+
+            frame_buffer_.uninitialized_resize(old_size + receive_capacity);
+            const int receivedLength = bus_interface->receive(
+                frame_buffer_.data() + old_size,
+                receive_capacity);
+
+            if (receivedLength < 0)
+            {
+                frame_buffer_.clear();
+                reset();
+                return CommError::HardwareError;
+            }
+
+            const std::size_t received_size =
+                static_cast<std::size_t>(receivedLength);
+
+            if (received_size > receive_capacity)
+            {
+                frame_buffer_.clear();
+                reset();
+                return CommError::InvalidLength;
+            }
+
+            // Discard the part that was reserved but not written.
+            frame_buffer_.uninitialized_resize(old_size + received_size);
+
+            if ((received_size == 0U) && (old_size == 0U))
+            {
+                return CommError::InvalidLength;
+            }
+
+            return check(id, output, outputCapacity, outputSize, frame);
         }
 
         /// @brief Method to get the Paylaod
@@ -235,36 +254,9 @@ Eine unbekannte Protokollversion wird erkannt.
                                         const bus_if *bus_interface,
                                         Frame_NS::frame_unpack_if &frame)
         {
-            return receive_raw(id, output, outputCapacity, outputSize, bus_interface, frame, frame_buffer.size());
+            return receive_raw(id, output, outputCapacity, outputSize, bus_interface, frame, frame_buffer_.available());
         }
 
-        void reset()
-        {
-            VersionChecked_ = false;
-            FrameVersionIdentified_ = Frame_NS::FrameVersion::undefinied;
-        }
-
-        /// @brief Method to check the remaining bytes from a message
-        /// @note                       Use this message when a complete
-        ///                             message is expected to be inside
-        ///                             the framebuffer
-        /// @param [out] id             Messageid
-        /// @param [out] output         Output destination array
-        /// @param [in] outputCapacity  Size of the array
-        /// @param [out] outputSize     Received size
-        /// @param bus_interface        Bus interface (uart)
-        /// @param [inout] frame        Frame Version format
-        /// @return                     @see Frame_NS::CommError
-        virtual Frame_NS::CommError check(MessageId &id,
-                                          std::uint8_t *output,
-                                          const std::int16_t &outputCapacity,
-                                          std::size_t &outputSize,
-                                          Frame_NS::frame_unpack_if &frame)
-        {
-            return check(id, output, outputCapacity, outputSize, frame, 0);
-        }
-
-    private:
         /// @brief Method to check the remaining bytes from a message
         /// @note                       Internally used to check the new message
         ///                             (and the remaining bytes inside the buffer)
@@ -275,20 +267,23 @@ Eine unbekannte Protokollversion wird erkannt.
         /// @param bus_interface        Bus interface (uart)
         /// @param [inout] frame        Frame Version format
         /// @return                     @see Frame_NS::CommError
-        virtual Frame_NS::CommError check(MessageId &id,
-                                          std::uint8_t *output,
-                                          const std::int16_t &outputCapacity,
-                                          std::size_t &outputSize,
-                                          Frame_NS::frame_unpack_if &frame,
-                                          const int &receivedLength)
+        Frame_NS::CommError check(MessageId &id,
+                                  std::uint8_t *output,
+                                  const std::int16_t &outputCapacity,
+                                  std::size_t &outputSize,
+                                  Frame_NS::frame_unpack_if &frame)
         {
             using namespace Frame_NS;
-            const std::size_t totalSize =
-                index_ + static_cast<std::size_t>(receivedLength);
+
+            if (frame_buffer_.empty())
+            {
+                return CommError::InvalidLength;
+            }
+
             const CommError decodeResult = frame.decode(
                 id,
-                frame_buffer.data(),
-                totalSize,
+                frame_buffer_.data(),
+                frame_buffer_.size(),
                 output,
                 outputCapacity,
                 outputSize);
@@ -297,46 +292,46 @@ Eine unbekannte Protokollversion wird erkannt.
             {
             case CommError::message_finished_buffer_not_empty:
             {
-
                 const std::size_t consumed = frame.get_index();
 
-                if (consumed > totalSize)
+                if ((consumed == 0U) || (consumed > frame_buffer_.size()))
                 {
-                    index_ = 0;
+                    frame_buffer_.clear();
                     reset();
                     return CommError::InvalidLength;
                 }
 
-                const std::size_t remaining =
-                    totalSize - consumed;
+                frame_buffer_.erase(
+                    frame_buffer_.begin(),
+                    frame_buffer_.begin() + consumed);
 
-                std::memmove(
-                    frame_buffer.data(),
-                    frame_buffer.data() + consumed,
-                    remaining);
-
-                index_ = remaining;
                 reset();
-
                 return decodeResult;
             }
 
             case CommError::message_unfinished:
-                // Dein frameV1_unpack speichert den Zwischenzustand intern.
-                // Daher sind alle übergebenen Bytes bereits verbraucht.
-                index_ = 0;
+                // The unpacker stores the intermediate frame state internally.
+                // Therefore all bytes passed to decode() have been consumed and
+                // must not be submitted again on the next call.
+                frame_buffer_.clear();
                 return decodeResult;
 
             case CommError::None:
-                index_ = 0;
+                frame_buffer_.clear();
                 reset();
                 return CommError::None;
 
             default:
-                index_ = 0;
+                frame_buffer_.clear();
                 reset();
                 return decodeResult;
             }
+        }
+
+        void reset()
+        {
+            VersionChecked_ = false;
+            FrameVersionIdentified_ = Frame_NS::FrameVersion::undefinied;
         }
     };
 

@@ -1,5 +1,6 @@
 {
   "cmake.ctest.debugLaunchTarget": "(ctest) Launch LLDB",
   "cmake.configureOnEdit": false,
-  "cmake.automaticReconfigure": false
+  "cmake.automaticReconfigure": false,
+  "editor.inlineSuggest.enabled": false
 }

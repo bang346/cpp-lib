@@ -2,7 +2,6 @@
 #include <iostream>
 #include <algorithm>
 
-#include "etl/circular_buffer.h"
 #include "etl/vector.h"
 
 #include "prittyprinting.hpp"
@@ -34,20 +33,20 @@ TEST(CircularBuffer, initial)
 
 TEST(Vector, initial)
 {
-    etl::vector<int, 7> buffer;
 
-    for (size_t i = 0; i < 7; i++)
+    etl::vector<int, 20> buffer;
+
+    buffer.uninitialized_resize(10);
+    auto ptr = buffer.data();
+    for (size_t i = 0; i < 4; i++)
     {
-        buffer.push_back(i);
+        ptr[i] = i;
     }
 
-    buffer.erase(buffer.begin(), buffer.begin() + 3);
-
-    int *ptr = buffer.data();
-
-    for (size_t i = 0; i < 3; i++)
+    etl::vector<int, 20> buffer2;
+    for (auto &&i : buffer)
     {
-        std::cout << GREEN << ptr[i] << std::endl;
+        std::cout << i << "\n";
     }
-    std::cout << RESET << std::endl;
+    int i = 0;
 }

@@ -131,9 +131,9 @@ TEST(Communication, ReceiveMessage)
     ConfigureGeneric<11> command_rx_error{};
     MotorCommand command_rx_error2;
     result = DUT2.receive_message(command_rx_error, &mock, frame_unpack);
-    ASSERT_EQ(result, Frame_NS::CommError::serialize_failed);
+    ASSERT_EQ(result, Frame_NS::CommError::InvalidLength);
     result = DUT2.receive_message(command_rx_error2, &mock, frame_unpack);
-    ASSERT_EQ(result, Frame_NS::CommError::serialize_failed);
+    ASSERT_EQ(result, Frame_NS::CommError::InvalidLength);
 }
 
 TEST(Communication, ReceiveMessagePartialy)
@@ -300,6 +300,7 @@ TEST(Communication, BusMasterMessage)
 
 TEST(Communication, Check)
 {
+
     std::array<uint8_t, 100> buffer{};
     crc_wrapper<std::uint16_t> coder(0xFFFFu, 0x1021u);
     frameV1_pack frame_pack(coder);
@@ -328,10 +329,9 @@ TEST(Communication, Check)
                                 {
                                     data[i] = data_tx_rx.front();
                                     data_tx_rx.pop_front();
-                                    
+
                                 }
-                                
-                            
+
                         return ret; }));
 
     BusMaster_NS::BusMasterTransmit<100> DUT1;
@@ -368,33 +368,73 @@ TEST(Communication, Check)
     }
 }
 
-// TEST(Communication, Transmit)
-// {
-//     BusMaster_NS::BusMasterTransmit<32> DUT;
-//     coder_crc<std::uint16_t> coder(0xFFFFu, 0x1021u);
-//     mock_spi spi;
+TEST(Communication, CheckDMA)
+{
 
-//     std::vector<uint8_t> captured_data;
-//     uint8_t captured_len = 0;
+    std::array<uint8_t, 100> buffer{};
+    crc_wrapper<std::uint16_t> coder(0xFFFFu, 0x1021u);
+    frameV1_pack frame_pack(coder);
+    frameV1_unpack frame_unpack(coder);
 
-//     ConfigureGeneric<12> command{
-//         0xfA,
-//         {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
+    mock_spi mock;
 
-//     EXPECT_CALL(spi, transmit(_, _))
-//         .WillOnce(Invoke(
-//             [&](const uint8_t *data, const uint8_t len) -> int
-//             {
-//                 captured_len = len;
+    std::deque<std::uint8_t> data_tx_rx;
+    EXPECT_CALL(mock, transmit(_, _))
+        .WillRepeatedly(Invoke([&](const uint8_t *const data, const uint8_t len) -> int
+                               {
+                            EXPECT_NE(data, nullptr);
+                            EXPECT_GT(len, 0);
+                            for (size_t i = 0; i < len; i++)
+                            {
+                                data_tx_rx.push_back(data[i]);
+                            }
+                            return 0; }));
 
-//                 // Inhalt kopieren, damit er nach dem Aufruf noch verfügbar ist
-//                 captured_data.assign(data, data + len);
+    EXPECT_CALL(mock, receive(_, _))
+        .WillRepeatedly(Invoke([&](uint8_t *const data, const uint8_t len) -> int
+                               {
+                                int ret = data_tx_rx.size();
 
-//                 return 0;
-//             }));
+                                for (size_t i = 0; i < ret; i++)
+                                {
+                                    data[i] = data_tx_rx.front();
+                                    data_tx_rx.pop_front();
 
-//     DUT.transmit(command, &spi, &coder);
-// }
+                                }
+
+                        return ret; }));
+
+    BusMaster_NS::BusMasterTransmit<100> DUT1;
+    BusMaster_NS::BusMasterReceive<100> DUT2;
+
+    ConfigurePWMs PWMs;
+    PWMs.ch1 = (uint8_t)PWM_Command::start;
+    PWMs.ch2 = (uint8_t)PWM_Command::stopp;
+    PWMs.ch3 = (uint8_t)PWM_Command::overwritestart;
+    PWMs.periode = 0xff00;
+    PWMs.Pulse1 = 0xf0f0;
+    PWMs.Pulse2 = 0xf0f1;
+    PWMs.Pulse3 = 0xf0f3;
+
+    ConfigureGeneric<12> command{
+        0xfA,
+        {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
+
+    DUT1.transmit(PWMs, &mock, frame_pack);
+    DUT1.transmit(command, &mock, frame_pack);
+
+    etl::vector<uint8_t, 100> vector;
+    for (auto &&i : data_tx_rx)
+    {
+        vector.push_back(i);
+    }
+
+    MessageId id;
+    std::size_t len = 0;
+    // auto result = DUT2.receive_raw(id, buffer.data(), buffer.size(), len, frame_unpack, buffer.size(), vector);
+
+    int i = 0;
+}
 
 template <typename>
 struct extract_argument;
