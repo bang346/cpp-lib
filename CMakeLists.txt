@@ -2,6 +2,19 @@ cmake_minimum_required(VERSION 3.16)
 project(cpp_lib LANGUAGES CXX)
 
 # -------------------------------------------------
+# Embedded Template Library (ETL)
+# -------------------------------------------------
+include(FetchContent)
+
+FetchContent_Declare(
+    etl
+    GIT_REPOSITORY https://github.com/ETLCPP/etl
+    GIT_TAG 20.48.1
+)
+
+FetchContent_MakeAvailable(etl)
+
+# -------------------------------------------------
 # Target platform
 # -------------------------------------------------
 set(
@@ -104,8 +117,6 @@ if(CPPLIB_BUILD_TESTS)
             "Build the tests with CPPLIB_TARGET=WINDOWS or LINUX."
         )
     endif()
-
-    include(FetchContent)
 
     FetchContent_Declare(
         googletest

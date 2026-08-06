@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <ctime>
 #include <string>
+#include <iostream>
 
 // the following are UBUNTU/LINUX, and MacOS ONLY terminal color codes.
 #define RESET "\033[0m"
