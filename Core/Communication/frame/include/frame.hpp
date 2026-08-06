@@ -9,6 +9,7 @@
 
 namespace Frame_NS
 {
+
     enum class CommError : std::int16_t
     {
         None,
@@ -18,13 +19,15 @@ namespace Frame_NS
         ClassInternalBufferTooSmall,
         InvalidFrame,
         InvalidLength,
+        InvalidArgument,
         CrcMismatch,
         UnsupportedVersion,
         HardwareError,
         Overflow,
         serialize_failed,
         message_unfinished,
-        message_finished_buffer_not_empty
+        message_finished_buffer_not_empty,
+        Aborted
     };
 
     enum class FrameVersion : uint8_t

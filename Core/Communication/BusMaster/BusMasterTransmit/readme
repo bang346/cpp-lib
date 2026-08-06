@@ -1,0 +1,8 @@
+// Wichtige Punkte
+/*
+Die klassen für uart leiten werden von Bus_if abgeleitet und async_receive und async_transmit, so können beide Busmasterclassen
+auf das selbe objet zugreifen -
+Es gibt eine ReceiveSync und eine ReceiveAsync class die beiden Klassen erben von BusMasterReceiveCore
+
+Bei Transmit läuft dma im hintergrund und die Bytes werden nicht kopiert deswegen muss der speicher frei bleiben
+*/
