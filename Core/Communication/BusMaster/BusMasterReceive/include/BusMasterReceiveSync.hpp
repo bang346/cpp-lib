@@ -58,13 +58,15 @@ public:
                                     Frame_NS::frame_unpack_if &frame,
                                     Frame_NS::size_type expected_length)
     {
+        // Check arguments
         if (!output || output_capacity == 0U || expected_length == 0U)
         {
-            return Frame_NS::CommError::InvalidLength;
+            return (!output) ? Frame_NS::CommError::InvalidArgument : Frame_NS::CommError::InvalidLength;
         }
 
         typename Core::ReceiveArea encoded{};
 
+        // Check wheather frame_buffer_ inside Core was prepared
         if (!this->receive_area_prepared())
         {
             encoded = this->prepare_receive_area(expected_length);
@@ -91,8 +93,6 @@ public:
             this->rollback_receive();
             return Frame_NS::CommError::ClassInternalBufferTooSmall; // More bytes received than the frame_buffer_ inside Core can hold
         }
-
-        this->commit_receive(receivedLength);
         return this->check(id, output, output_capacity, output_size, frame);
     }
 };

@@ -7,7 +7,7 @@
 #include "bus_if.hpp"
 
 template <std::size_t Size>
-class BusMasterTransmitSync
+class BusMasterTransmitSync final
     : private BusMasterTransmitCore<Size>
 {
 private:

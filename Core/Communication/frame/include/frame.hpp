@@ -21,6 +21,7 @@ namespace Frame_NS
         InvalidFrame,
         InvalidLength,
         InvalidArgument,
+        InvalidState,
         CrcMismatch,
         UnsupportedVersion,
         HardwareError,
@@ -28,7 +29,8 @@ namespace Frame_NS
         serialize_failed,
         message_unfinished,
         message_finished_buffer_not_empty,
-        Aborted
+        Aborted,
+        ERROR_IS_UNDEFINED__
     };
 
     enum class FrameVersion : uint8_t

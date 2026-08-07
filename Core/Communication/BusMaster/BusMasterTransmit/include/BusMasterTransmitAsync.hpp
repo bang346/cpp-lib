@@ -6,7 +6,7 @@
 #include "async_tx_bus_if.hpp"
 
 template <std::size_t Size>
-class BusMasterTransmitAsync
+class BusMasterTransmitAsync final
     : private BusMasterTransmitCore<Size>
 {
 private:
