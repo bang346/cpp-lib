@@ -134,6 +134,12 @@ protected:
             output_capacity,
             output_size);
 
+        if (output_size > output_capacity)
+        {
+            frame_buffer_.clear();
+            output_size = 0U;
+            return CommError::InvalidLength;
+        }
         switch (decodeResult)
         {
         case CommError::message_finished_buffer_not_empty:

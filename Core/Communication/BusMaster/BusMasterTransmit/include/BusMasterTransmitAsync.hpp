@@ -27,7 +27,7 @@ public:
         Message &message,
         Frame_NS::frame_pack_if &frame)
     {
-        if (active_)
+        if (active_ || transmitter_.is_transmit_active())
         {
             return Frame_NS::CommError::Busy;
         }

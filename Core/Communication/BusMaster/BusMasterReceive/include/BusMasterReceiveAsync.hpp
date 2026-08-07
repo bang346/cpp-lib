@@ -24,46 +24,44 @@ public:
 
     Frame_NS::CommError start_receive(std::size_t maximum_length)
     {
-        typename Core::ReceiveArea encoded{};
+        if (maximum_length == 0U)
+        {
+            return Frame_NS::CommError::InvalidLength;
+        }
 
         // Check wheather a receive is running
-        if (receiver_.is_receive_active() || active_)
+        if (active_ || receiver_.is_receive_active())
         {
             return Frame_NS::CommError::Busy;
         }
 
-        this->prepare_receive_area(maximum_length);
+        const typename Core::ReceiveArea area =
+            this->prepare_receive_area(maximum_length);
 
-        // Check Pointer maximum_length <= Buffer.available && prepare frame_buffer_
-        if (!static_cast<bool>(encoded))
+        if (!static_cast<bool>(area))
         {
-            return Frame_NS::CommError::ClassInternalBufferTooSmall; // frame_buffer_ inside Core
+            return Frame_NS::CommError::ClassInternalBufferTooSmall;
         }
 
-        auto result = receiver_.start_receive(encoded.data, encoded.capacity);
-        switch (result)
+        switch (receiver_.start_receive(area.data, area.capacity))
         {
+        case AsyncStartResult::Started:
+            active_ = true;
+            return Frame_NS::CommError::None;
+
         case AsyncStartResult::Busy:
             this->rollback_receive();
             return Frame_NS::CommError::Busy;
-            break;
-        case AsyncStartResult::Started:
-            break;
+
         case AsyncStartResult::InvalidArgument:
             this->rollback_receive();
-            return Frame_NS::CommError::InvalidArgument;
-            break;
+            return Frame_NS::CommError::InvalidLength;
+
         case AsyncStartResult::HardwareError:
-            this->rollback_receive();
-            return Frame_NS::CommError::HardwareError;
-            break;
         default:
             this->rollback_receive();
-            return Frame_NS::CommError::ERROR_IS_UNDEFINED__;
-            break;
+            return Frame_NS::CommError::HardwareError;
         }
-        active_ = true;
-        return Frame_NS::CommError::None;
     }
 
     Frame_NS::CommError process_receive(
@@ -73,47 +71,77 @@ public:
         std::size_t &output_size,
         Frame_NS::frame_unpack_if &frame)
     {
-        if (receiver_.is_receive_active())
+        output_size = 0U;
+
+        if (output == nullptr || output_capacity == 0U)
         {
-            return Frame_NS::CommError::Busy;
-        }
-        if (!output || output_capacity == 0U)
-        {
-            return (!output) ? Frame_NS::CommError::InvalidArgument : Frame_NS::CommError::InvalidLength;
+            return Frame_NS::CommError::InvalidLength;
         }
 
-        if (!this->receive_area_prepared())
+        AsyncResult result{};
+        if (!receiver_.take_receive_result(result))
         {
-            return Frame_NS::CommError::InvalidState;
+            return active_
+                       ? Frame_NS::CommError::Busy
+                       : Frame_NS::CommError::None;
         }
 
-        AsyncResult result;
-        receiver_.take_receive_result(result);
-        if (static_cast<bool>(result))
+        active_ = false;
+
+        switch (result.event)
         {
+        case AsyncEvent::Completed:
+        case AsyncEvent::Idle:
+            if (!this->receive_area_prepared())
+            {
+                return Frame_NS::CommError::InvalidState;
+            }
+
             if (!this->commit_receive(result.transferred_bytes))
             {
                 return Frame_NS::CommError::ClassInternalBufferTooSmall;
             }
-            return this->check(id, output, output_capacity, output_size, frame);
-        }
 
-        // Error handling
-        switch (result.event)
-        {
+            if (this->buffered_size() == 0U)
+            {
+                return Frame_NS::CommError::Timeout;
+            }
+
+            return this->check(
+                id,
+                output,
+                output_capacity,
+                output_size,
+                frame);
+
         case AsyncEvent::Aborted:
+            // Current public CommError has no dedicated Aborted state.
+            this->rollback_receive();
             return Frame_NS::CommError::Aborted;
+
         case AsyncEvent::Error:
-            return Frame_NS::CommError::HardwareError;
+        case AsyncEvent::None:
         default:
-            break;
+            this->rollback_receive();
+            return Frame_NS::CommError::HardwareError;
         }
-        return Frame_NS::CommError::ERROR_IS_UNDEFINED__;
     }
 
-    void abort_receive()
+    bool abort_receive()
     {
-        receiver_.abort_receive();
+        if (!active_)
+        {
+            return false;
+        }
+
+        if (!receiver_.abort_receive())
+        {
+            return false;
+        }
+
+        this->rollback_receive();
+        active_ = false;
+        return true;
     }
 
     [[nodiscard]] bool active() const noexcept

@@ -7,7 +7,7 @@
 #include "bus_if.hpp"
 
 template <std::size_t Size>
-class BusMasterReceiveSync
+class BusMasterReceiveSync final
     : private BusMasterReceiveCore<Size>
 {
 private:
@@ -31,10 +31,15 @@ public:
     Frame_NS::CommError receive_message(Message &message,
                                         Frame_NS::frame_unpack_if &frame)
     {
-        MessageId id;
-        std::size_t len = 0;
+        MessageId id{};
+        std::size_t len = 0U;
         std::size_t expected_len = MessageTraits<Message>::maximumSize + frame.get_MaxSize();
-        const auto result = receive_raw(id, message_buffer_.data(), message_buffer_.size(), len, frame, expected_len);
+        const auto result = receive_raw(id,
+                                        this->message_buffer_.data(),
+                                        this->message_buffer_.size(),
+                                        len,
+                                        frame,
+                                        expected_len);
 
         if (result == Frame_NS::CommError::message_finished_buffer_not_empty || result == Frame_NS::CommError::None)
         {
