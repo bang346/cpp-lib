@@ -15,6 +15,8 @@ enum class AsyncEvent : std::uint8_t
 {
     None,
     Completed,
+    CompletedLowerHalf,
+    CompletedUpperHalf,
     Idle,
     Aborted,
     Error

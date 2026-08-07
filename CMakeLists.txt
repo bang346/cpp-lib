@@ -138,7 +138,7 @@ if(CPPLIB_BUILD_TESTS)
     include(GoogleTest)
     enable_testing()
 
-    add_subdirectory(Hal/mock/mock_spi)
+    add_subdirectory(Hal/mock)
     add_subdirectory(Helper)
 
     if(CPPLIB_BUILD_HARDWARETESTS)

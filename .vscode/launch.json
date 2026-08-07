@@ -9,7 +9,7 @@
                 "name": "Debug GoogleTests",
                 "type": "lldb",
                 "request": "launch",
-                "program": "${workspaceFolder}/build/tests/test_BusMaster/test_BusMaster",
+                "program": "${workspaceFolder}/build/tests/test_BusMaster/test_BusMasterOwn",
                 "args": [
                     "--gtest_color=yes"
                 ],
