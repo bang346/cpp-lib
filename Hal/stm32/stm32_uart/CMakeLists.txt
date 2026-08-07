@@ -12,6 +12,7 @@ target_include_directories(stm32_uart PUBLIC
 
 target_link_libraries(stm32_uart PUBLIC
     Interface::bus_if
+    Interface::async_bus_if
     stm32cubemx
 )
 
