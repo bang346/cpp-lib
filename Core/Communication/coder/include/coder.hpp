@@ -37,7 +37,7 @@ public:
     /// @param len          len of the data
     /// @param result       Coded data
     /// @return             Len of the new data
-    virtual coder_if_NS::len_t code(const std::uint8_t *data, const coder_if_NS::len_t &len, std::uint8_t *result) const override
+    virtual coder_if_NS::len_t code(const std::uint8_t *data, const coder_if_NS::len_t &len, std::uint8_t *result, coder_if_NS::len_t capacity) const override
     {
         if (!data)
         {
@@ -70,7 +70,7 @@ public:
     /// @param len          len of the data
     /// @param result       Coded data
     /// @return             Len of the new data
-    virtual coder_if_NS::len_t decode(const std::uint8_t *data, const coder_if_NS::len_t &len, std::uint8_t *result) override
+    virtual coder_if_NS::len_t decode(const std::uint8_t *data, const coder_if_NS::len_t &len, std::uint8_t *result, coder_if_NS::len_t capacity) override
     {
         for (size_t i = 0; i < len - sizeof(CrcT); i++)
         {

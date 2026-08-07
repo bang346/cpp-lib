@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "etl/vector.h"
+#include "etl/circular_buffer.h"
 
 #include "prittyprinting.hpp"
 

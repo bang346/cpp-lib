@@ -351,7 +351,7 @@ namespace
                 .WillOnce(Return(AsyncStartResult::InvalidArgument));
             EXPECT_EQ(
                 transmitter.start_transmit(message, frame),
-                Frame_NS::CommError::InvalidLength);
+                Frame_NS::CommError::InvalidArgument);
         }
 
         {
@@ -478,7 +478,7 @@ namespace
 
             EXPECT_EQ(
                 transmitter.process_transmit(),
-                Frame_NS::CommError::HardwareError);
+                 (event == AsyncEvent::Aborted) ? Frame_NS::CommError::Aborted : Frame_NS::CommError::HardwareError);
             EXPECT_FALSE(transmitter.active());
         }
     }
