@@ -68,7 +68,7 @@ protected:
 
 TEST_F(BusMasterTransmitAsyncTest, TransmitCompletesAsynchronously)
 {
-    auto time = 10s;
+    auto time = 10ms;
     std::atomic<bool> transmission_finished{false};
 
     std::promise<void> transmission_started;

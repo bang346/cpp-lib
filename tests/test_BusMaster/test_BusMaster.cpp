@@ -49,10 +49,10 @@ namespace
             encode,
             (const MessageId &message_id,
              const std::uint8_t *payload,
-             const std::size_t &payload_size,
+             const Frame_NS::size_type &payload_size,
              std::uint8_t *output,
-             const std::int16_t &output_capacity,
-             std::size_t &output_size),
+             const Frame_NS::size_type &output_capacity,
+             Frame_NS::size_type &output_size),
             (const, override));
     };
 
@@ -64,10 +64,10 @@ namespace
             decode,
             (MessageId & message_id,
              const std::uint8_t *payload,
-             const std::size_t &payload_size,
+             const Frame_NS::size_type &payload_size,
              std::uint8_t *output,
-             const std::int16_t &output_capacity,
-             std::size_t &output_size),
+             const Frame_NS::size_type &output_capacity,
+             Frame_NS::size_type &output_size),
             (override));
 
         MOCK_METHOD(bool, verify, (), (const, override));
@@ -478,7 +478,7 @@ namespace
 
             EXPECT_EQ(
                 transmitter.process_transmit(),
-                 (event == AsyncEvent::Aborted) ? Frame_NS::CommError::Aborted : Frame_NS::CommError::HardwareError);
+                (event == AsyncEvent::Aborted) ? Frame_NS::CommError::Aborted : Frame_NS::CommError::HardwareError);
             EXPECT_FALSE(transmitter.active());
         }
     }

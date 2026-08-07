@@ -9,6 +9,7 @@
 
 namespace Frame_NS
 {
+    using size_type = std::size_t;
 
     enum class CommError : std::int16_t
     {
@@ -53,10 +54,10 @@ namespace Frame_NS
         /// @return                     @see CommError
         virtual CommError encode(const MessageId &messageid,
                                  const std::uint8_t *payload,
-                                 const std::size_t &payloadSize,
+                                 const size_type &payloadSize,
                                  std::uint8_t *output,
-                                 const std::int16_t &outputCapacity,
-                                 std::size_t &outputSize) const = 0;
+                                 const size_type &outputCapacity,
+                                 size_type &outputSize) const = 0;
     };
 
     struct frame_unpack_if
@@ -80,10 +81,10 @@ namespace Frame_NS
         ///                             message_finished_buffer_not_empty
         virtual CommError decode(MessageId &messageid,
                                  const std::uint8_t *payload,
-                                 const std::size_t &payloadSize,
+                                 const size_type &payloadSize,
                                  std::uint8_t *output,
-                                 const std::int16_t &outputCapacity,
-                                 std::size_t &outputSize) = 0;
+                                 const size_type &outputCapacity,
+                                 size_type &outputSize) = 0;
 
         /// @brief Returns wheather the last decode call was sucessfull
         /// @return                 true = success,
@@ -94,11 +95,11 @@ namespace Frame_NS
         ///                             index when the payload has not been
         ///                             read in its entirety and data is therefore still in the buffer
         /// @return                     Index payload
-        virtual std::size_t get_index() const = 0;
+        virtual size_type get_index() const = 0;
 
         /// @brief Method to get the maximum frame size
         /// @return
-        virtual std::size_t get_MaxSize() const = 0;
+        virtual size_type get_MaxSize() const = 0;
     };
 
 } // namespace Frame_NS

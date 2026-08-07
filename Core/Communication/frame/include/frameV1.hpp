@@ -57,10 +57,10 @@ public:
     }
     virtual Frame_NS::CommError encode(const MessageId &messageid,
                                        const std::uint8_t *payload,
-                                       const std::size_t &payloadSize,
+                                       const Frame_NS::size_type &payloadSize,
                                        std::uint8_t *output,
-                                       const std::int16_t &outputCapacity,
-                                       std::size_t &outputSize) const override
+                                       const Frame_NS::size_type &outputCapacity,
+                                       Frame_NS::size_type &outputSize) const override
     {
         BinaryWriter writer(output, outputCapacity);
         frameV1_header::len_size_t len = payloadSize + header_.FrameHeadSize_ + crc_size;
@@ -113,13 +113,13 @@ public:
 
     virtual Frame_NS::CommError decode(MessageId &messageid,
                                        const std::uint8_t *payload,
-                                       const std::size_t &payloadSize,
+                                       const Frame_NS::size_type &payloadSize,
                                        std::uint8_t *output,
-                                       const std::int16_t &outputCapacity,
-                                       std::size_t &outputSize) override
+                                       const Frame_NS::size_type &outputCapacity,
+                                       Frame_NS::size_type &outputSize) override
     {
 
-        std::size_t input_received = 0;
+        Frame_NS::size_type input_received = 0;
         while (!head_received_ && received_ < frameV1_header::FrameHeadSize_ && input_received < payloadSize)
         {
             buffer_[received_] = payload[input_received++];
@@ -198,9 +198,9 @@ public:
 
     virtual bool verify() const override { return true; };
 
-    virtual std::size_t get_index() const { return index_; }
+    virtual Frame_NS::size_type get_index() const { return index_; }
 
-    virtual std::size_t get_MaxSize() const { return frameV1_header::FrameHeadSize_ + crc_size; }
+    virtual Frame_NS::size_type get_MaxSize() const { return frameV1_header::FrameHeadSize_ + crc_size; }
 
     void reset()
     {
