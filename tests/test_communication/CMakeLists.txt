@@ -5,7 +5,8 @@ add_executable(test_communication
 
 target_link_libraries(test_communication PRIVATE
     gmock_main
-    Communication::BusMaster
+    Communication::BusMasterTransmit
+    Communication::BusMasterReceive
     Communication::coder
     hal::mock_spi
     Communication::frame
@@ -21,7 +22,8 @@ add_executable(testFrameV1
 
 target_link_libraries(testFrameV1 PRIVATE
     gmock_main
-    Communication::BusMaster
+    Communication::BusMasterTransmit
+    Communication::BusMasterReceive
     Communication::coder
     hal::mock_spi
     Communication::frame

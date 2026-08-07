@@ -8,6 +8,6 @@ add_subdirectory(motor)
 add_subdirectory(parts)
 add_subdirectory(svpwm_test)
 
-# add_subdirectory(test_communication)
+add_subdirectory(test_communication)
 add_subdirectory(ETL)
 add_subdirectory(test_BusMaster)

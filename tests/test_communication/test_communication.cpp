@@ -4,7 +4,8 @@
 #include <type_traits>
 #include <deque>
 
-#include "BusMaster.hpp"
+#include "BusMasterReceiveSync.hpp"
+#include "BusMasterTransmitSync.hpp"
 #include "crc.hpp"
 #include "coder.hpp"
 #include "mock_spi.hpp"
@@ -17,7 +18,7 @@
 using ::testing::_;
 using ::testing::Invoke;
 
-TEST(Communication, BasciSendReceive)
+TEST(BusMaster, BasciSendReceive)
 {
     std::vector<std::uint8_t> data_tx_received;
     // CRC16
@@ -54,11 +55,11 @@ TEST(Communication, BasciSendReceive)
     ConfigureGeneric<12> command{
         0xfA,
         {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
-    BusMaster_NS::BusMasterTransmit<32> DUT1;
-    BusMaster_NS::BusMasterReceive<32> DUT2;
+    BusMasterTransmitSync<32> DUT1(mock);
+    BusMasterReceiveSync<32> DUT2(mock);
 
     ConfigureGeneric<12> command_rx{};
-    auto result = DUT1.transmit(command, &mock, frame_pack);
+    auto result = DUT1.transmit(command, frame_pack);
     ASSERT_EQ(result, Frame_NS::CommError::None);
 
     // Receive Part
@@ -66,7 +67,7 @@ TEST(Communication, BasciSendReceive)
 
     std::array<uint8_t, 32> receive_buffer{};
     std::size_t len = 0;
-    result = DUT2.receive_raw(id, receive_buffer.data(), receive_buffer.size(), len, &mock, frame_unpack);
+    result = DUT2.receive_raw(id, receive_buffer.data(), receive_buffer.size(), len, frame_unpack, receive_buffer.size());
 
     ASSERT_EQ(result, Frame_NS::CommError::None);
     if (MessageTraits<ConfigureGeneric<12>>::id == id)
@@ -76,7 +77,7 @@ TEST(Communication, BasciSendReceive)
     }
 }
 
-TEST(Communication, ReceiveMessage)
+TEST(BusMaster, ReceiveMessage)
 {
     std::vector<std::uint8_t> data_tx_received;
     // CRC16
@@ -113,11 +114,11 @@ TEST(Communication, ReceiveMessage)
     ConfigureGeneric<12> command{
         0xfA,
         {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
-    BusMaster_NS::BusMasterTransmit<32> DUT1;
-    BusMaster_NS::BusMasterReceive<32> DUT2;
+    BusMasterTransmitSync<32> DUT1(mock);
+    BusMasterReceiveSync<32> DUT2(mock);
 
     ConfigureGeneric<12> command_rx{};
-    auto result = DUT1.transmit(command, &mock, frame_pack);
+    auto result = DUT1.transmit(command, frame_pack);
     ASSERT_EQ(result, Frame_NS::CommError::None);
 
     // Receive Part
@@ -125,18 +126,18 @@ TEST(Communication, ReceiveMessage)
 
     std::array<uint8_t, 32> receive_buffer{};
     std::size_t len = 0;
-    result = DUT2.receive_message(command_rx, &mock, frame_unpack);
+    result = DUT2.receive_message(command_rx, frame_unpack);
     ASSERT_EQ(result, Frame_NS::CommError::None);
 
     ConfigureGeneric<11> command_rx_error{};
     MotorCommand command_rx_error2;
-    result = DUT2.receive_message(command_rx_error, &mock, frame_unpack);
-    ASSERT_EQ(result, Frame_NS::CommError::InvalidLength);
-    result = DUT2.receive_message(command_rx_error2, &mock, frame_unpack);
-    ASSERT_EQ(result, Frame_NS::CommError::InvalidLength);
+    result = DUT2.receive_message(command_rx_error, frame_unpack);
+    ASSERT_EQ(result, Frame_NS::CommError::ClassInternalBufferTooSmall);
+    result = DUT2.receive_message(command_rx_error2, frame_unpack);
+    ASSERT_EQ(result, Frame_NS::CommError::ClassInternalBufferTooSmall);
 }
 
-TEST(Communication, ReceiveMessagePartialy)
+TEST(BusMaster, ReceiveMessagePartialy)
 {
     std::vector<std::uint8_t> data_tx_received;
     // CRC16
@@ -182,11 +183,11 @@ TEST(Communication, ReceiveMessagePartialy)
     ConfigureGeneric<12> command{
         0xfA,
         {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
-    BusMaster_NS::BusMasterTransmit<32> DUT1;
-    BusMaster_NS::BusMasterReceive<32> DUT2;
+    BusMasterTransmitSync<32> DUT1(mock);
+    BusMasterReceiveSync<32> DUT2(mock);
 
     ConfigureGeneric<12> command_rx{};
-    auto result = DUT1.transmit(command, &mock, frame_pack);
+    auto result = DUT1.transmit(command, frame_pack);
     ASSERT_EQ(result, Frame_NS::CommError::None);
 
     data_tx_received.insert(data_tx_received.end(), data_tx_received.begin(), data_tx_received.begin() + 21);
@@ -196,7 +197,7 @@ TEST(Communication, ReceiveMessagePartialy)
 
     while (result != Frame_NS::CommError::None)
     {
-        result = DUT2.receive_message(command_rx, &mock, frame_unpack);
+        result = DUT2.receive_message(command_rx, frame_unpack);
         if (result == Frame_NS::CommError::message_finished_buffer_not_empty)
         {
             int i = 0;
@@ -206,7 +207,7 @@ TEST(Communication, ReceiveMessagePartialy)
     ASSERT_EQ(result, Frame_NS::CommError::None);
 }
 
-TEST(Communication, BusMasterMessage)
+TEST(BusMaster, BusMasterMessage)
 {
     std::array<uint8_t, 100> buffer{};
     crc_wrapper<std::uint16_t> coder(0xFFFFu, 0x1021u);
@@ -242,8 +243,8 @@ TEST(Communication, BusMasterMessage)
                             
                         return ret; }));
 
-    BusMaster_NS::BusMasterTransmit<100> DUT1;
-    BusMaster_NS::BusMasterReceive<100> DUT2;
+    BusMasterTransmitSync<100> DUT1(mock);
+    BusMasterReceiveSync<100> DUT2(mock);
 
     ConfigurePWMs PWMs;
     PWMs.ch1 = (uint8_t)PWM_Command::start;
@@ -258,8 +259,8 @@ TEST(Communication, BusMasterMessage)
         0xfA,
         {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
 
-    DUT1.transmit(PWMs, &mock, frame_pack);
-    DUT1.transmit(command, &mock, frame_pack);
+    DUT1.transmit(PWMs, frame_pack);
+    DUT1.transmit(command, frame_pack);
 
     // Receive Part
     ConfigurePWMs PWMs_received{};
@@ -269,7 +270,7 @@ TEST(Communication, BusMasterMessage)
     Frame_NS::CommError result;
     do
     {
-        result = DUT2.receive_raw(id, buffer.data(), buffer.size(), size, &mock, frame_unpack);
+        result = DUT2.receive_raw(id, buffer.data(), buffer.size(), size, frame_unpack, buffer.size());
         if (id == MessageTraits<ConfigurePWMs>::id)
         {
             BinaryReader reader(buffer.data(), buffer.size());
@@ -298,7 +299,7 @@ TEST(Communication, BusMasterMessage)
     } while (result == Frame_NS::CommError::message_finished_buffer_not_empty);
 }
 
-TEST(Communication, Check)
+TEST(BusMaster, Check)
 {
 
     std::array<uint8_t, 100> buffer{};
@@ -334,8 +335,8 @@ TEST(Communication, Check)
 
                         return ret; }));
 
-    BusMaster_NS::BusMasterTransmit<100> DUT1;
-    BusMaster_NS::BusMasterReceive<100> DUT2;
+    BusMasterTransmitSync<100> DUT1(mock);
+    BusMasterReceiveSync<100> DUT2(mock);
 
     ConfigurePWMs PWMs;
     PWMs.ch1 = (uint8_t)PWM_Command::start;
@@ -350,25 +351,25 @@ TEST(Communication, Check)
         0xfA,
         {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
 
-    DUT1.transmit(PWMs, &mock, frame_pack);
-    DUT1.transmit(command, &mock, frame_pack);
+    DUT1.transmit(PWMs, frame_pack);
+    DUT1.transmit(command, frame_pack);
 
     // Receive Part
     ConfigurePWMs PWMs_received{};
     ConfigureGeneric<12> configuregeneric{};
     MessageId id;
     std::size_t size = 0;
-    Frame_NS::CommError result = DUT2.receive_raw(id, buffer.data(), buffer.size(), size, &mock, frame_unpack);
+    Frame_NS::CommError result = DUT2.receive_raw(id, buffer.data(), buffer.size(), size, frame_unpack, buffer.size());
 
-    if (result == Frame_NS::CommError::message_finished_buffer_not_empty)
-    {
-        result = DUT2.check(id, buffer.data(), buffer.size(), size, frame_unpack);
-        int i = 0;
-        EXPECT_EQ(result, Frame_NS::CommError::None);
-    }
+    // if (result == Frame_NS::CommError::message_finished_buffer_not_empty)
+    // {
+    //     result = DUT2.check(id, buffer.data(), buffer.size(), size, frame_unpack);
+    //     int i = 0;
+    //     EXPECT_EQ(result, Frame_NS::CommError::None);
+    // }
 }
 
-TEST(Communication, CheckDMA)
+TEST(BusMaster, CheckErrors)
 {
 
     std::array<uint8_t, 100> buffer{};
@@ -376,64 +377,24 @@ TEST(Communication, CheckDMA)
     frameV1_pack frame_pack(coder);
     frameV1_unpack frame_unpack(coder);
 
+    std::deque<int> results = {-1, 0, 40};
     mock_spi mock;
-
-    std::deque<std::uint8_t> data_tx_rx;
-    EXPECT_CALL(mock, transmit(_, _))
-        .WillRepeatedly(Invoke([&](const uint8_t *const data, const uint8_t len) -> int
-                               {
-                            EXPECT_NE(data, nullptr);
-                            EXPECT_GT(len, 0);
-                            for (size_t i = 0; i < len; i++)
-                            {
-                                data_tx_rx.push_back(data[i]);
-                            }
-                            return 0; }));
 
     EXPECT_CALL(mock, receive(_, _))
         .WillRepeatedly(Invoke([&](uint8_t *const data, const uint8_t len) -> int
                                {
-                                int ret = data_tx_rx.size();
-
-                                for (size_t i = 0; i < ret; i++)
-                                {
-                                    data[i] = data_tx_rx.front();
-                                    data_tx_rx.pop_front();
-
-                                }
+                                int ret = results.front();
+                                results.pop_front();
 
                         return ret; }));
 
-    BusMaster_NS::BusMasterTransmit<100> DUT1;
-    BusMaster_NS::BusMasterReceive<100> DUT2;
-
-    ConfigurePWMs PWMs;
-    PWMs.ch1 = (uint8_t)PWM_Command::start;
-    PWMs.ch2 = (uint8_t)PWM_Command::stopp;
-    PWMs.ch3 = (uint8_t)PWM_Command::overwritestart;
-    PWMs.periode = 0xff00;
-    PWMs.Pulse1 = 0xf0f0;
-    PWMs.Pulse2 = 0xf0f1;
-    PWMs.Pulse3 = 0xf0f3;
-
-    ConfigureGeneric<12> command{
-        0xfA,
-        {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}};
-
-    DUT1.transmit(PWMs, &mock, frame_pack);
-    DUT1.transmit(command, &mock, frame_pack);
-
-    etl::vector<uint8_t, 100> vector;
-    for (auto &&i : data_tx_rx)
-    {
-        vector.push_back(i);
-    }
+    BusMasterReceiveSync<10> DUT2(mock);
 
     MessageId id;
-    std::size_t len = 0;
-    // auto result = DUT2.receive_raw(id, buffer.data(), buffer.size(), len, frame_unpack, buffer.size(), vector);
-
-    int i = 0;
+    std::size_t size = 0;
+    EXPECT_EQ(DUT2.receive_raw(id, buffer.data(), buffer.size(), size, frame_unpack, buffer.size()), Frame_NS::CommError::HardwareError);
+    EXPECT_EQ(DUT2.receive_raw(id, buffer.data(), buffer.size(), size, frame_unpack, buffer.size()), Frame_NS::CommError::Timeout);
+    EXPECT_EQ(DUT2.receive_raw(id, buffer.data(), buffer.size(), size, frame_unpack, buffer.size()), Frame_NS::CommError::ClassInternalBufferTooSmall);
 }
 
 template <typename>

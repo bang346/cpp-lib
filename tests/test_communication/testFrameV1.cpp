@@ -3,7 +3,6 @@
 #include <array>
 #include <type_traits>
 
-#include "BusMaster.hpp"
 #include "crc.hpp"
 #include "coder.hpp"
 #include "mock_spi.hpp"
