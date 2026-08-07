@@ -9,6 +9,10 @@
 #include "frame.hpp"
 #include "binary_container.hpp"
 
+/// @brief Transmit core class
+/// @note               This class is used to abstract the
+///                     different receive methods (DMA, polling, circular(future))
+/// @tparam Size        Internal buffer size to create the frame when all data is received
 template <std::size_t Size>
 class BusMasterTransmitCore
 {
@@ -26,11 +30,16 @@ protected:
         std::size_t size{0U};
     };
 
+    /// @brief Read the message directly
+    /// @tparam Message             Message-template
+    /// @param [in] message         Message obj
+    /// @param [inout] frame        Frame Version format
+    /// @param [out] encoded        @see EncodedFrame
+    /// @return                     @see Frame_NS::CommError
     template <typename Message>
-    Frame_NS::CommError encode(
-        Message &message,
-        Frame_NS::frame_pack_if &frame,
-        EncodedFrame &encoded)
+    Frame_NS::CommError encode(const Message &message,
+                               Frame_NS::frame_pack_if &frame,
+                               EncodedFrame &encoded)
     {
         encoded = {};
 

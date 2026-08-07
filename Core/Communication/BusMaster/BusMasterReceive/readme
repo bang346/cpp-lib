@@ -1,4 +1,563 @@
-// Wichtige Punkte
-Die klassen für uart leiten werden von Bus_if abgeleitet und async_receive und async_transmit, so können beide Busmasterclassen
-                                                                                                       auf das selbe objet zugreifen -
-                                                                                                   Es gibt eine ReceiveSync und eine ReceiveAsync class die beiden Klassen erben von BusMasterReceiveCore
+# BusMaster Communication Layer
+
+The BusMaster module provides transport-independent message framing and supports both **synchronous** and **asynchronous** communication.
+
+The main design goal is to keep protocol logic independent from the hardware transport. UART, SPI, DMA-based peripherals, Linux/Windows serial ports, or future network transports can therefore reuse the same framing and serialization logic.
+
+## Architecture Overview
+
+The module is split into transmit and receive paths. Both paths contain a shared core and separate synchronous/asynchronous front ends.
+
+```mermaid
+classDiagram
+    direction TB
+
+    class BusMasterTransmitCore {
+        <<template>>
+        #message_buffer_
+        #frame_buffer_
+        #encode(message, frame, encoded) CommError
+    }
+
+    class BusMasterTransmitSync {
+        <<template>>
+        -bus_if& bus_
+        +transmit(message, frame) CommError
+    }
+
+    class BusMasterTransmitAsync {
+        <<template>>
+        -async_tx_if& transmitter_
+        -bool active_
+        -size_t expected_length_
+        +start_transmit(message, frame) CommError
+        +process_transmit() CommError
+        +abort_transmit() bool
+        +active() bool
+    }
+
+    class BusMasterReceiveCore {
+        <<template>>
+        #message_buffer_
+        #frame_buffer_
+        #prepare_receive_area(length) ReceiveArea
+        #commit_receive(length) bool
+        #rollback_receive()
+        #append_received_data(data, length) bool
+        #check(id, output, capacity, size, frame) CommError
+        #buffered_size() size_t
+        #receive_area_prepared() bool
+    }
+
+    class BusMasterReceiveSync {
+        <<template>>
+        -bus_if& bus_
+        +receive_message(message, frame) CommError
+        +receive_raw(id, output, capacity, size, frame, expected_length) CommError
+    }
+
+    class BusMasterReceiveAsync {
+        <<template>>
+        -async_rx_if& receiver_
+        -bool active_
+        +start_receive(maximum_length) CommError
+        +process_receive(id, output, capacity, size, frame) CommError
+        +abort_receive() bool
+        +active() bool
+    }
+
+    BusMasterTransmitCore <|-- BusMasterTransmitSync : private inheritance
+    BusMasterTransmitCore <|-- BusMasterTransmitAsync : private inheritance
+
+    BusMasterReceiveCore <|-- BusMasterReceiveSync : private inheritance
+    BusMasterReceiveCore <|-- BusMasterReceiveAsync : private inheritance
+```
+
+The core classes contain the common serialization, framing, buffering, and decoding logic. They do not depend on a concrete UART, SPI, DMA controller, or operating system.
+
+---
+
+## Transport Interfaces
+
+The BusMaster classes depend only on small transport capability interfaces.
+
+```mermaid
+classDiagram
+    direction LR
+
+    class bus_if {
+        <<interface>>
+        +transmit(data, len) int
+        +receive(data, len) int
+        +transmitreceive(tx, rx, len) int
+    }
+
+    class async_rx_if {
+        <<interface>>
+        +start_receive(destination, capacity) AsyncStartResult
+        +is_receive_active() bool
+        +take_receive_result(result) bool
+        +abort_receive() bool
+    }
+
+    class async_tx_if {
+        <<interface>>
+        +start_transmit(source, length) AsyncStartResult
+        +is_transmit_active() bool
+        +take_transmit_result(result) bool
+        +abort_transmit() bool
+    }
+
+    class async_transfer_if {
+        <<interface>>
+        +start_transfer(tx_data, rx_data, length) AsyncStartResult
+        +is_transfer_active() bool
+        +take_transfer_result(result) bool
+        +abort_transfer() bool
+    }
+
+    class UartTransport {
+        <<example implementation>>
+    }
+
+    class SpiTransport {
+        <<example implementation>>
+    }
+
+    UartTransport ..|> bus_if
+    UartTransport ..|> async_rx_if
+    UartTransport ..|> async_tx_if
+
+    SpiTransport ..|> bus_if
+    SpiTransport ..|> async_transfer_if
+
+    BusMasterTransmitSync --> bus_if
+    BusMasterReceiveSync --> bus_if
+    BusMasterTransmitAsync --> async_tx_if
+    BusMasterReceiveAsync --> async_rx_if
+```
+
+A transport can implement multiple capabilities. A DMA-capable UART implementation can, for example, implement all three UART-relevant interfaces:
+
+```cpp
+class stm32_uart
+    : public bus_if,
+      public async_rx_if,
+      public async_tx_if
+{
+    // Hardware-specific implementation
+};
+```
+
+The same UART object can then be passed to a synchronous or asynchronous BusMaster. The BusMaster only sees the interface it requires.
+
+---
+
+## Asynchronous Result Types
+
+The asynchronous interfaces share the types from `async_types.hpp`:
+
+```cpp
+enum class AsyncStartResult : std::uint8_t
+{
+    Started,
+    Busy,
+    InvalidArgument,
+    HardwareError
+};
+
+enum class AsyncEvent : std::uint8_t
+{
+    None,
+    Completed,
+    CompletedLowerHalf,
+    CompletedUpperHalf,
+    Idle,
+    Aborted,
+    Error
+};
+
+struct AsyncResult
+{
+    std::size_t transferred_bytes{0U};
+    AsyncEvent event{AsyncEvent::None};
+    std::uint32_t hardware_error{0U};
+};
+```
+
+`AsyncStartResult` describes whether an asynchronous operation could be started.
+
+`AsyncResult` describes the result of an operation that was started earlier.
+
+The `take_*_result()` methods return `true` only when a **new result** is available. Once the result has been consumed, the next call returns `false` until another transfer completes.
+
+---
+
+# Transmit Path
+
+## BusMasterTransmitCore
+
+`BusMasterTransmitCore` owns the message and frame buffers and performs the protocol preparation:
+
+```text
+Message
+  |
+  v
+BinaryWriter
+  |
+  v
+message_buffer_
+  |
+  v
+frame_pack_if::encode()
+  |
+  v
+frame_buffer_
+```
+
+The nested `EncodedFrame` type is only a view into the internal `frame_buffer_`:
+
+```cpp
+struct EncodedFrame
+{
+    const std::uint8_t* data;
+    std::size_t size;
+};
+```
+
+It does not allocate or copy another frame.
+
+### Synchronous Transmit
+
+`BusMasterTransmitSync` encodes the message and immediately forwards the resulting frame to `bus_if::transmit()`.
+
+```mermaid
+sequenceDiagram
+    participant App
+    participant TX as BusMasterTransmitSync
+    participant Core as BusMasterTransmitCore
+    participant Bus as bus_if
+
+    App->>TX: transmit(message, frame)
+    TX->>Core: encode(message, frame)
+    Core-->>TX: EncodedFrame
+    TX->>Bus: transmit(data, size)
+    Bus-->>TX: result
+    TX-->>App: CommError
+```
+
+The synchronous BusMaster can reuse its internal frame buffer as soon as `transmit()` returns.
+
+### Asynchronous Transmit
+
+`BusMasterTransmitAsync` separates starting the transfer from processing its completion result.
+
+```mermaid
+sequenceDiagram
+    participant App
+    participant TX as BusMasterTransmitAsync
+    participant Core as BusMasterTransmitCore
+    participant Bus as async_tx_if
+    participant HW as DMA / Hardware
+
+    App->>TX: start_transmit(message, frame)
+    TX->>Core: encode(message, frame)
+    Core-->>TX: EncodedFrame
+    TX->>Bus: start_transmit(data, size)
+    Bus->>HW: start transfer
+    Bus-->>TX: Started
+    TX-->>App: None
+
+    Note over Core,HW: frame_buffer_ must remain unchanged
+
+    HW-->>Bus: completion / interrupt
+
+    App->>TX: process_transmit()
+    TX->>Bus: take_transmit_result(result)
+    Bus-->>TX: AsyncResult
+    TX-->>App: CommError
+```
+
+### TX Buffer Ownership
+
+The asynchronous transport reads directly from the internal `frame_buffer_`.
+
+Therefore, while `BusMasterTransmitAsync::active()` is `true`:
+
+* the frame buffer must not be overwritten,
+* another message must not be encoded into the same BusMaster object,
+* another asynchronous transmission must not be started using that buffer.
+
+The frame buffer becomes reusable after the completion result is consumed or after a successful abort.
+
+---
+
+# Receive Path
+
+## BusMasterReceiveCore
+
+`BusMasterReceiveCore` manages:
+
+* the internal message buffer,
+* the internal frame buffer,
+* zero-copy receive areas,
+* frame decoding,
+* leftover bytes after a completed frame,
+* copy-based input for externally owned transport buffers.
+
+### Direct Receive Area
+
+`prepare_receive_area()` reserves unused space inside `frame_buffer_` and returns a raw pointer plus capacity:
+
+```text
+frame_buffer_
+
++--------------------+---------------------------+
+| existing data      | reserved receive area     |
++--------------------+---------------------------+
+                     ^
+                     |
+                  DMA writes here
+```
+
+After a successful transfer:
+
+```cpp
+commit_receive(received_bytes);
+```
+
+shrinks the reserved area to the number of bytes that were actually received.
+
+If the operation fails or is aborted:
+
+```cpp
+rollback_receive();
+```
+
+restores the previous buffer state.
+
+### Copy-Based Receive Path
+
+Not every transport controls the destination buffer. For transports whose receive memory is owned elsewhere, the core provides:
+
+```cpp
+append_received_data(data, length);
+```
+
+This allows future transports such as TCP/UDP stacks to forward externally owned byte blocks into the same framing logic without changing the protocol core.
+
+---
+
+## Synchronous Receive
+
+`BusMasterReceiveSync` reserves space in the core buffer, performs the synchronous transport call, commits the received bytes, and then invokes the shared decoder.
+
+```mermaid
+sequenceDiagram
+    participant App
+    participant RX as BusMasterReceiveSync
+    participant Core as BusMasterReceiveCore
+    participant Bus as bus_if
+    participant Frame as frame_unpack_if
+
+    App->>RX: receive_raw(...)
+    RX->>Core: prepare_receive_area(length)
+    Core-->>RX: ReceiveArea
+    RX->>Bus: receive(area.data, area.capacity)
+    Bus-->>RX: result
+    RX->>Core: commit_receive(received bytes)
+    RX->>Core: check(...)
+    Core->>Frame: decode(...)
+    Frame-->>Core: CommError + payload
+    Core-->>RX: CommError
+    RX-->>App: CommError
+```
+
+`receive_message<Message>()` additionally validates the received `MessageId` and payload length before deserializing the message with `BinaryReader`.
+
+---
+
+## Asynchronous Receive
+
+`BusMasterReceiveAsync` splits receive into two phases:
+
+1. `start_receive()` reserves memory and starts the hardware operation.
+2. `process_receive()` consumes the later transfer result and processes the received bytes.
+
+```mermaid
+sequenceDiagram
+    participant App
+    participant RX as BusMasterReceiveAsync
+    participant Core as BusMasterReceiveCore
+    participant Bus as async_rx_if
+    participant HW as DMA / Hardware
+    participant Frame as frame_unpack_if
+
+    App->>RX: start_receive(maximum_length)
+    RX->>Core: prepare_receive_area(maximum_length)
+    Core-->>RX: ReceiveArea
+    RX->>Bus: start_receive(area.data, area.capacity)
+    Bus->>HW: start receive
+    Bus-->>RX: Started
+    RX-->>App: None
+
+    Note over Core,HW: reserved receive area is owned by active transfer
+
+    HW-->>Bus: Completed / Idle / Error
+
+    App->>RX: process_receive(...)
+    RX->>Bus: take_receive_result(result)
+    Bus-->>RX: AsyncResult
+    RX->>Core: commit_receive(transferred_bytes)
+    RX->>Core: check(...)
+    Core->>Frame: decode(...)
+    Frame-->>Core: result
+    Core-->>RX: CommError
+    RX-->>App: CommError
+```
+
+### RX Buffer Ownership
+
+While a direct asynchronous receive is active, the reserved part of `frame_buffer_` is owned by the transport.
+
+The buffer must not be cleared, erased, resized, or otherwise modified until the operation has completed or has been aborted.
+
+`BusMasterReceiveCore` tracks this state with `receive_area_prepared_`.
+
+---
+
+# Why Sync and Async Are Separate Classes
+
+A synchronous operation has a single lifetime:
+
+```text
+start operation -> wait -> result
+```
+
+An asynchronous operation has multiple phases:
+
+```text
+start operation
+      |
+      | hardware works independently
+      v
+completion event
+      |
+      v
+process result
+```
+
+Keeping the two APIs separate avoids:
+
+* runtime mode checks,
+* DMA-specific state in synchronous code,
+* blocking inside asynchronous transports,
+* `dynamic_cast`,
+* transport-specific logic inside the protocol core.
+
+The shared behavior remains in `BusMasterTransmitCore` and `BusMasterReceiveCore`.
+
+---
+
+# Inheritance Model
+
+The Sync and Async BusMaster classes use **private inheritance** from their core:
+
+```cpp
+class BusMasterReceiveAsync
+    : private BusMasterReceiveCore<Size>
+{
+};
+```
+
+This is implementation inheritance. The core is not exposed as part of the public BusMaster API.
+
+Hardware transport classes use **public interface inheritance** instead:
+
+```cpp
+class stm32_uart
+    : public bus_if,
+      public async_rx_if,
+      public async_tx_if
+{
+};
+```
+
+This expresses the capabilities provided by the transport.
+
+---
+
+# Extending the Architecture
+
+## UART
+
+A UART transport can implement:
+
+```text
+bus_if
+async_rx_if
+async_tx_if
+```
+
+This allows the same UART object to be used by either a synchronous or asynchronous BusMaster.
+
+## SPI
+
+SPI commonly couples transmission and reception. The library therefore provides `async_transfer_if` for full-duplex asynchronous transfers instead of forcing them into independent RX and TX operations.
+
+## TCP / Ethernet
+
+TCP is a byte stream. A network adapter can forward received chunks into the receive core using `append_received_data()`.
+
+Network-specific concerns such as sockets, IP addresses, ports, link state, DHCP, or reconnect logic should remain outside the BusMaster core.
+
+## UDP / Datagram Transports
+
+UDP preserves packet boundaries. A future datagram-specific adapter can still forward the packet payload into the same receive core when the BusMaster frame format is used.
+
+Zero-copy should be used where it is natural, such as UART DMA, but it is not required for every transport.
+
+---
+
+# Directory Structure
+
+```text
+Core/
+├── Communication/
+│   └── BusMaster/
+│       ├── BusMasterReceive/
+│       │   └── include/
+│       │       ├── BusMasterReceiveCore.hpp
+│       │       ├── BusMasterReceiveSync.hpp
+│       │       └── BusMasterReceiveAsync.hpp
+│       │
+│       └── BusMasterTransmit/
+│           └── include/
+│               ├── BusMasterTransmitCore.hpp
+│               ├── BusMasterTransmitSync.hpp
+│               └── BusMasterTransmitAsync.hpp
+│
+└── Interface/
+    ├── bus_if/
+    │   └── include/
+    │       └── bus_if.hpp
+    │
+    └── async_bus_if/
+        └── include/
+            ├── async_types.hpp
+            ├── async_rx_bus_if.hpp
+            ├── async_tx_bus_if.hpp
+            └── async_rxtx_bus_if.hpp
+```
+
+---
+
+# Current Integration Note
+
+`bus_if` is the existing synchronous interface and currently uses `std::uint8_t` transfer lengths, while the asynchronous interfaces use `std::size_t`.
+
+When implementing synchronous receive transports, keep the return-value contract of `bus_if::receive()` and `BusMasterReceiveSync` consistent.
+
+The current `bus_if` documentation defines `0` as success, so the concrete transport and synchronous BusMaster must agree on whether the return value represents a status code or a received-byte count.
+
+For new transport capabilities, prefer adding a small dedicated interface instead of turning `bus_if` into a universal transport interface.

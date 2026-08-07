@@ -6,6 +6,8 @@
 #include "BusMasterReceiveCore.hpp"
 #include "bus_if.hpp"
 
+/// @brief Synchonous transmit spezialisation
+/// @tparam Size            Internal buffer sizes
 template <std::size_t Size>
 class BusMasterReceiveSync final
     : private BusMasterReceiveCore<Size>
@@ -56,6 +58,16 @@ public:
         return result;
     }
 
+    /// @brief Method to get the Paylaod
+    /// @warning                    Currently supports only FrameV1!
+    /// @note                       Use this method, when the message and
+    ///                             and length is unknown
+    /// @param [out] id             Messageid
+    /// @param [out] output         Output destination array
+    /// @param [in] outputCapacity  Size of the array
+    /// @param [out] outputSize     Received size
+    /// @param [inout] frame        Frame Version format
+    /// @return                     @see Frame_NS::CommError
     Frame_NS::CommError receive_raw(MessageId &id,
                                     std::uint8_t *output,
                                     Frame_NS::size_type output_capacity,

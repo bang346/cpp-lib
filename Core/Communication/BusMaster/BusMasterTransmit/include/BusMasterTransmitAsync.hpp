@@ -5,6 +5,8 @@
 #include "BusMasterTransmitCore.hpp"
 #include "async_tx_bus_if.hpp"
 
+/// @brief Asynchonous transmit spezialisation
+/// @tparam Size            Internal buffer sizes
 template <std::size_t Size>
 class BusMasterTransmitAsync final
     : private BusMasterTransmitCore<Size>
@@ -17,11 +19,19 @@ private:
     std::size_t expected_length_{0U};
 
 public:
+
+    /// @brief Constructor
+    /// @param transmitter          transmitter-obj
     explicit BusMasterTransmitAsync(async_tx_if &transmitter)
         : transmitter_{transmitter}
     {
     }
 
+    /// @brief Method to start (DMA-) transmit
+    /// @tparam Message             Message type
+    /// @param message              Message wich will be send as payload
+    /// @param frame                Frame object for frame format
+    /// @return                     @see Frame_NS::CommError
     template <typename Message>
     Frame_NS::CommError start_transmit(
         Message &message,
@@ -58,6 +68,8 @@ public:
         }
     }
 
+    /// @brief Method to check the transmit status
+    /// @return             @see Frame_NS::CommError
     Frame_NS::CommError process_transmit()
     {
         AsyncResult result{};
@@ -92,6 +104,9 @@ public:
         }
     }
 
+    /// @brief Method to abort the current transmission
+    /// @return             true = success,
+    ///                     false = error
     bool abort_transmit()
     {
         if (!active_)
@@ -109,6 +124,9 @@ public:
         return true;
     }
 
+        
+    /// @brief Getter active
+    /// @return             active_
     [[nodiscard]]
     bool active() const noexcept
     {

@@ -6,6 +6,8 @@
 #include "BusMasterReceiveCore.hpp"
 #include "async_rx_bus_if.hpp"
 
+/// @brief Asynchonous receive spezialisation
+/// @tparam Size            Internal buffer sizes
 template <std::size_t Size>
 class BusMasterReceiveAsync final
     : private BusMasterReceiveCore<Size>
@@ -13,15 +15,20 @@ class BusMasterReceiveAsync final
 private:
     using Core = BusMasterReceiveCore<Size>;
 
-    async_rx_if &receiver_;
-    bool active_{false};
+    async_rx_if &receiver_;     
+    bool active_{false};        // Receive is active
 
 public:
+    /// @brief Constructor
+    /// @param receiver         reciver-obj
     explicit BusMasterReceiveAsync(async_rx_if &receiver)
         : receiver_{receiver}
     {
     }
 
+    /// @brief Method to start the (DMA-) receive
+    /// @param maximum_length       Max expected length
+    /// @return                     @see ComError
     Frame_NS::CommError start_receive(std::size_t maximum_length)
     {
         if (maximum_length == 0U)
@@ -64,6 +71,15 @@ public:
         }
     }
 
+    /// @brief Method to check the remaining bytes from a message
+    /// @note                       Internally used to check the new message
+    ///                             (and the remaining bytes inside the buffer)
+    /// @param [out] id             Messageid
+    /// @param [out] output         Output destination array
+    /// @param [in] outputCapacity  Size of the array
+    /// @param [out] outputSize     Received size
+    /// @param [inout] frame        Frame Version format
+    /// @return                     @see Frame_NS::CommError          
     Frame_NS::CommError process_receive(
         MessageId &id,
         std::uint8_t *output,
@@ -127,6 +143,9 @@ public:
         }
     }
 
+    /// @brief Abort currently the currently running receive
+    /// @return             true = success,
+    ///                     false = failed
     bool abort_receive()
     {
         if (!active_)
@@ -144,6 +163,8 @@ public:
         return true;
     }
 
+    /// @brief Getter active
+    /// @return             active_
     [[nodiscard]] bool active() const noexcept
     {
         return active_;

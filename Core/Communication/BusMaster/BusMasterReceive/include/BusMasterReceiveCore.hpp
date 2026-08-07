@@ -5,28 +5,39 @@
 #include "binary_container.hpp"
 #include "etl/vector.h"
 
+/// @brief Receive core class
+/// @note               This class is used to abstract the
+///                     different receive methods (DMA, polling, circular(future))
+/// @tparam MessageSize Internal buffer size to create the frame when all data is received
 template <std::size_t MessageSize>
 class BusMasterReceiveCore
 {
     static_assert(MessageSize > 0U, "BusMasterReceiveCore requires a non-zero message buffer");
 
 protected:
-    std::array<std::uint8_t, MessageSize> message_buffer_{};
+    // std::array<std::uint8_t, MessageSize> message_buffer_{};
 
     // Die feste 100 bleibt bei dir bestehen.
-    etl::vector<std::uint8_t, MessageSize> frame_buffer_{};
+    etl::vector<std::uint8_t, MessageSize> frame_buffer_{}; // Receive buffer before frame creation
 
+    // Helper struct for frame_buffer
     struct ReceiveArea
     {
-        std::uint8_t *data{nullptr};
-        std::size_t capacity{0U};
-        [[nodiscard]] explicit operator bool() const noexcept
+        std::uint8_t *data{nullptr};                          // Position of the newest valid data inside the vector
+        std::size_t capacity{0U};                             // Remaining capacity
+        [[nodiscard]] explicit operator bool() const noexcept // Shows if the Received data is valid
         {
             return data != nullptr && capacity > 0U;
         }
     };
 
-    ReceiveArea prepare_receive_area(std::size_t requested_length)
+    /// @brief Method to make room inside the receive vector
+    /// @note                   Used to increase the size of the etl
+    ///                         vector, before a receive call. As a result of that it is
+    ///                         possible to index the vector as a pointer
+    /// @param requested_length New vector capacity
+    /// @return                 @see ReceiveArea
+    ReceiveArea prepare_receive_area(const std::size_t &requested_length)
     {
         if (receive_area_prepared_ || requested_length == 0U)
         {
@@ -47,7 +58,11 @@ protected:
         return {frame_buffer_.data() + old_size_, receive_capacity_};
     }
 
-    bool commit_receive(std::size_t received_length)
+    /// @brief Used to add the new received data
+    /// @param received_length
+    /// @return                 true = succes,
+    ///                         false = error
+    bool commit_receive(const std::size_t &received_length)
     {
         if (!receive_area_prepared_)
         {
@@ -65,6 +80,9 @@ protected:
         return true;
     }
 
+    /// @brief Restores the last vector size
+    /// @note               Used when the vector was increased,
+    ///                     but the receive failed.
     void rollback_receive()
     {
         if (receive_area_prepared_)
@@ -100,12 +118,20 @@ protected:
         return true;
     }
 
-    Frame_NS::CommError check(
-        MessageId &id,
-        std::uint8_t *output,
-        std::size_t output_capacity,
-        std::size_t &output_size,
-        Frame_NS::frame_unpack_if &frame)
+    /// @brief Method to check the remaining bytes from a message
+    /// @note                       Internally used to check the new message
+    ///                             (and the remaining bytes inside the buffer)
+    /// @param [out] id             Messageid
+    /// @param [out] output         Output destination array
+    /// @param [in] outputCapacity  Size of the array
+    /// @param [out] outputSize     Received size
+    /// @param [inout] frame        Frame Version format
+    /// @return                     @see Frame_NS::CommError
+    Frame_NS::CommError check(MessageId &id,
+                              std::uint8_t *output,
+                              std::size_t output_capacity,
+                              std::size_t &output_size,
+                              Frame_NS::frame_unpack_if &frame)
     {
         using namespace Frame_NS;
 
@@ -113,12 +139,12 @@ protected:
 
         if (receive_area_prepared_)
         {
-            return CommError::Busy;
+            return CommError::InvalidState;
         }
 
-        if (output == nullptr || output_capacity <= 0)
+        if (!output || output_capacity <= 0)
         {
-            return CommError::InvalidLength;
+            return (!output) ? CommError::InvalidArgument : CommError::InvalidLength;
         }
 
         if (frame_buffer_.empty())
@@ -138,7 +164,7 @@ protected:
         {
             frame_buffer_.clear();
             output_size = 0U;
-            return CommError::InvalidLength;
+            return CommError::ClassInternalBufferTooSmall;
         }
         switch (decodeResult)
         {
@@ -176,11 +202,15 @@ protected:
         }
     }
 
+    /// @brief Getter receive_area_prepared_
+    /// @return size of the frame_buffer_
     [[nodiscard]] std::size_t buffered_size() const noexcept
     {
         return frame_buffer_.size();
     }
 
+    /// @brief Getter frame_buffer_
+    /// @return size of the frame_buffer_
     [[nodiscard]] bool receive_area_prepared() const noexcept
     {
         return receive_area_prepared_;
@@ -194,7 +224,7 @@ private:
         receive_area_prepared_ = false;
     }
 
-    std::size_t old_size_{0U};
-    std::size_t receive_capacity_{0U};
+    std::size_t old_size_{0U};         // Used to increase the vector size or restore the old size
+    std::size_t receive_capacity_{0U}; //
     bool receive_area_prepared_{false};
 };
