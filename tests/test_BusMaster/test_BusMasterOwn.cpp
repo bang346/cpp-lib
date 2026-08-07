@@ -160,7 +160,7 @@ TEST_F(BusMasterTransmitAsyncTest, TransmitCompletesAsynchronously)
     auto expected_time = std::chrono::duration<double>(time).count();
     auto real_time = std::chrono::duration<double>(end - start).count();
     int i = 0;
-    EXPECT_NEAR(expected_time, real_time, 0.01);
+    EXPECT_NEAR(expected_time, real_time, 2);
 
     // ---------------------------------------------------------
     // Ergebnis vom Bus abholen

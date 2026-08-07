@@ -359,7 +359,7 @@ namespace
         BusMasterTransmitAsync<16U> transmitter{async_tx};
         TestMessage message{0x1234U};
 
-        EXPECT_CALL(async_tx, is_transmit_active()).WillOnce(Return(false));
+        // EXPECT_CALL(async_tx, is_transmit_active()).WillOnce(Return(false));
         expect_simple_frame_encode(frame);
         EXPECT_CALL(async_tx, start_transmit(_, 3U))
             .WillOnce(Return(AsyncStartResult::Started));
@@ -381,7 +381,7 @@ namespace
         BusMasterTransmitAsync<16U> transmitter{async_tx};
         TestMessage message{};
 
-        EXPECT_CALL(async_tx, is_transmit_active()).WillOnce(Return(false));
+        // EXPECT_CALL(async_tx, is_transmit_active()).WillOnce(Return(false));
         expect_simple_frame_encode(frame);
         EXPECT_CALL(async_tx, start_transmit(_, _))
             .WillOnce(Return(AsyncStartResult::Started));
@@ -403,7 +403,7 @@ namespace
         BusMasterTransmitAsync<16U> transmitter{async_tx};
         TestMessage message{};
 
-        EXPECT_CALL(async_tx, is_transmit_active()).WillOnce(Return(false));
+        // EXPECT_CALL(async_tx, is_transmit_active()).WillOnce(Return(false));
         expect_simple_frame_encode(frame);
         EXPECT_CALL(async_tx, start_transmit(_, 3U))
             .WillOnce(Return(AsyncStartResult::Started));
@@ -433,7 +433,7 @@ namespace
         BusMasterTransmitAsync<16U> transmitter{async_tx};
         TestMessage message{};
 
-        EXPECT_CALL(async_tx, is_transmit_active()).WillOnce(Return(false));
+        // EXPECT_CALL(async_tx, is_transmit_active()).WillOnce(Return(false));
         expect_simple_frame_encode(frame);
         EXPECT_CALL(async_tx, start_transmit(_, 3U))
             .WillOnce(Return(AsyncStartResult::Started));
@@ -463,7 +463,7 @@ namespace
         BusMasterTransmitAsync<16U> transmitter{async_tx};
         TestMessage message{};
 
-        EXPECT_CALL(async_tx, is_transmit_active()).WillOnce(Return(false));
+        // EXPECT_CALL(async_tx, is_transmit_active()).WillOnce(Return(false));
         expect_simple_frame_encode(frame);
         EXPECT_CALL(async_tx, start_transmit(_, _))
             .WillOnce(Return(AsyncStartResult::Started));

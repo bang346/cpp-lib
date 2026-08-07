@@ -37,7 +37,7 @@ protected:
     /// @param [out] encoded        @see EncodedFrame
     /// @return                     @see Frame_NS::CommError
     template <typename Message>
-    Frame_NS::CommError encode(const Message &message,
+    Frame_NS::CommError encode(Message &message,
                                Frame_NS::frame_pack_if &frame,
                                EncodedFrame &encoded)
     {

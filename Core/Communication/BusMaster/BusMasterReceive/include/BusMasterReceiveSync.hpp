@@ -47,7 +47,7 @@ public:
         {
             if (MessageTraits<Message>::maximumSize == len && MessageTraits<Message>::id == id)
             {
-                BinaryReader reader(message_buffer_.data(), message_buffer_.size());
+                BinaryReader reader(this->message_buffer_.data(), this->message_buffer_.size());
                 message.serialize(reader);
             }
             else

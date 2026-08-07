@@ -15,7 +15,7 @@ class BusMasterReceiveCore
     static_assert(MessageSize > 0U, "BusMasterReceiveCore requires a non-zero message buffer");
 
 protected:
-    // std::array<std::uint8_t, MessageSize> message_buffer_{};
+    std::array<std::uint8_t, MessageSize> message_buffer_{}; // Needed in the derived classes
 
     // Die feste 100 bleibt bei dir bestehen.
     etl::vector<std::uint8_t, MessageSize> frame_buffer_{}; // Receive buffer before frame creation

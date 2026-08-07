@@ -19,7 +19,6 @@ private:
     std::size_t expected_length_{0U};
 
 public:
-
     /// @brief Constructor
     /// @param transmitter          transmitter-obj
     explicit BusMasterTransmitAsync(async_tx_if &transmitter)
@@ -37,7 +36,7 @@ public:
         Message &message,
         Frame_NS::frame_pack_if &frame)
     {
-        if (active_ || transmitter_.is_transmit_active())
+        if (active_)
         {
             return Frame_NS::CommError::Busy;
         }
@@ -124,7 +123,6 @@ public:
         return true;
     }
 
-        
     /// @brief Getter active
     /// @return             active_
     [[nodiscard]]
