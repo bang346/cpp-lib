@@ -88,7 +88,17 @@ public:
                 len,
                 timeout_);
 
-        return status == HAL_OK ? 0 : -1;
+        if (status == HAL_OK)
+        {
+            return static_cast<int>(len);
+        }
+
+        if (status == HAL_TIMEOUT)
+        {
+            return 0;
+        }
+
+        return -1;
     }
 
     /// @brief Blocking transmit followed by receive

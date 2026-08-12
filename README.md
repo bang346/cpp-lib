@@ -97,6 +97,24 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build --config Debug
 ```
 
+Or to use Presets: 
+
+```bash
+cmake --list-presets
+cmake --preset clang-asan
+cmake --build --preset clang-asan
+```
+
+To Configure all:
+```bash
+Start-Job { cmake --preset msvc-asan }; Start-Job { cmake --preset gcc-asan } ; Start-Job { cmake --preset clang-asan }
+```
+
+To Build all:
+```bash
+Start-Job { cmake --build --preset msvc-asan }; Start-Job { cmake --build --preset gcc-asan } ; Start-Job { cmake --build --preset clang-asan }
+```
+
 ## Building and Running the Tests
 
 Enable the tests during configuration:

@@ -5,8 +5,8 @@ add_executable(rs232_w_test
 target_link_libraries(rs232_w_test PRIVATE
     gmock_main
     windows::rs232_w
-    Communication::BusMaster
-    Communication::coder
+    Communication::BusMasterTransmit
+    Communication::BusMasterReceive
     Communication::frame
     helper::prittyprinting
 )

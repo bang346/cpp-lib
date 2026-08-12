@@ -78,6 +78,11 @@ message(STATUS "cpp-lib target platform: ${CPPLIB_TARGET}")
 add_subdirectory(Core)
 
 # -------------------------------------------------
+# Asan
+# -------------------------------------------------
+option(CPPLIB_ENABLE_ASAN "Enable AddressSanitizer for host tests" OFF)
+
+# -------------------------------------------------
 # Platform-specific implementations
 # -------------------------------------------------
 if(CPPLIB_TARGET STREQUAL "STM32")
@@ -110,6 +115,28 @@ option(
 )
 
 if(CPPLIB_BUILD_TESTS)
+    if(CPPLIB_ENABLE_ASAN)
+        if(MSVC)
+            add_compile_options(
+                /fsanitize=address
+            )
+
+            add_link_options(
+                /INCREMENTAL:NO
+            )
+
+        elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+            add_compile_options(
+                -fsanitize=address
+                -fno-omit-frame-pointer
+            )
+
+            add_link_options(
+                -fsanitize=address
+            )
+        endif()
+    endif()
+
     if(CPPLIB_TARGET STREQUAL "STM32")
         message(
             FATAL_ERROR
